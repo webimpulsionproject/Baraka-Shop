@@ -33,15 +33,15 @@ export default function CataloguePage() {
       <div className="bg-[#1A6B47] py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white/90 text-sm font-medium px-4 py-1.5 rounded-full mb-4">
-            <span>🛍️</span>
-            <span>Tous nos produits halal</span>
+            <span>🥩</span>
+            <span>Boucherie · Traiteur · Épicerie — 100% Halal</span>
           </div>
           <h1 className="font-playfair text-4xl md:text-5xl font-bold text-white mb-4">
             Notre Catalogue
           </h1>
           <p className="text-white/75 text-lg max-w-xl mx-auto">
-            Explorez notre sélection de produits halal premium, soigneusement
-            sourcés pour vous.
+            Viandes fraîches du jour, brochettes maison, colis barbecue et
+            épicerie vrac. Découpé à la demande.
           </p>
         </div>
       </div>
