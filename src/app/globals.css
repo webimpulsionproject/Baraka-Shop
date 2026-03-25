@@ -2,45 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --font-playfair: 'Playfair Display', serif;
-  --font-dm-sans: 'DM Sans', sans-serif;
-}
-
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   background-color: #FAF8F3;
-  font-family: var(--font-dm-sans);
+  font-family: var(--font-dm-sans), sans-serif;
+  -webkit-font-smoothing: antialiased;
   color: #1a1a1a;
 }
 
-@layer base {
-  * {
-    box-sizing: border-box;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-playfair);
-  }
-}
-
 @layer components {
-  .btn-primary {
-    @apply bg-[#C9922A] hover:bg-[#A87520] text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-200;
+  .btn-orange {
+    @apply inline-flex items-center justify-center gap-2 bg-[#E8401C] hover:bg-[#C43516] text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 hover:shadow-lg;
   }
-
-  .btn-secondary {
-    @apply border-2 border-white text-white hover:bg-white hover:text-[#1A6B47] font-semibold px-6 py-3 rounded-lg transition-colors duration-200;
+  .btn-green {
+    @apply inline-flex items-center justify-center gap-2 bg-[#1A6B47] hover:bg-[#14533A] text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 hover:shadow-lg;
   }
-
+  .btn-outline-white {
+    @apply inline-flex items-center justify-center gap-2 border-2 border-white text-white hover:bg-white hover:text-[#1A6B47] font-semibold px-6 py-3 rounded-xl transition-all duration-200;
+  }
+  .input-field {
+    @apply w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1A6B47]/30 focus:border-[#1A6B47] bg-white text-gray-800 placeholder-gray-400 transition-all;
+  }
   .section-title {
     @apply font-playfair text-3xl md:text-4xl font-bold text-[#1A6B47] mb-2;
-  }
-
-  .section-subtitle {
-    @apply text-gray-600 text-lg mb-8;
   }
 }

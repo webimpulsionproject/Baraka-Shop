@@ -4,7 +4,14 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git remote:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "WebSearch",
+      "WebFetch(domain:www.villepratique.fr)",
+      "WebFetch(domain:www.laptiteboucherie.fr)",
+      "WebFetch(domain:paisible.ai)",
+      "WebFetch(domain:www.pagesjaunes.fr)",
+      "WebFetch(domain:www.bottin.fr)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

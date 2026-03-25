@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Playfair_Display, DM_Sans } from "next/font/google";
 import "./globals.css";
+import { CartProvider } from "@/lib/cart-context";
 import Navbar from "@/components/Navbar";
 
-const playfairDisplay = Playfair_Display({
+const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
   display: "swap",
@@ -16,28 +17,23 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Baraka Shop - Épicerie Halal Premium",
+  title: "Baraka Shop — Boucherie Halal Premium | Mons-en-Barœul",
   description:
-    "Découvrez notre sélection de produits halal premium : épices, thés, huiles et miels du monde entier. Qualité certifiée, saveurs authentiques.",
-  keywords: "halal, épices, thés, huiles, miel, produits bio, épicerie halal, certifié halal",
-  openGraph: {
-    title: "Baraka Shop - Épicerie Halal Premium",
-    description:
-      "Découvrez notre sélection de produits halal premium : épices, thés, huiles et miels du monde entier.",
-    type: "website",
-  },
+    "Boucherie halal certifiée, traiteur et épicerie vrac à Mons-en-Barœul. Click & Collect en 30 min, livraison locale. Viandes fraîches du jour.",
+  keywords:
+    "boucherie halal, viande halal, mons-en-baroeul, click and collect, traiteur, agneau, volaille",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr" className={`${playfairDisplay.variable} ${dmSans.variable}`}>
+    <html lang="fr" className={`${playfair.variable} ${dmSans.variable}`}>
       <body className="bg-[#FAF8F3] font-dm antialiased">
-        <Navbar />
-        <main>{children}</main>
+        <CartProvider>
+          <Navbar />
+          <main>{children}</main>
+        </CartProvider>
       </body>
     </html>
   );
