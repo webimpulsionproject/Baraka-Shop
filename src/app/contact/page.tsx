@@ -18,10 +18,10 @@ export default function ContactPage() {
 
   return (
     <>
-      <div className="min-h-screen bg-[#FAF8F3] py-12">
+      <div className="min-h-screen bg-[#FAFAF8] py-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h1 className="font-playfair text-4xl font-bold text-[#1A6B47]">Nous Contacter</h1>
+            <h1 className="font-playfair text-4xl font-bold text-[#1B5E20]">Nous Contacter</h1>
             <p className="text-gray-500 mt-2">Une question ? Un renseignement ? Écrivez-nous.</p>
           </div>
 
@@ -57,7 +57,7 @@ export default function ContactPage() {
                     <select value={form.subject} onChange={set("subject")} className="input-field">
                       <option value="">Sélectionner…</option>
                       <option>Commande / Click & Collect</option>
-                      <option>Livraison</option>
+                      <option>Livraison à domicile</option>
                       <option>Produits & disponibilités</option>
                       <option>Autre</option>
                     </select>
@@ -73,7 +73,7 @@ export default function ContactPage() {
                       required
                     />
                   </div>
-                  <button type="submit" className="btn-orange w-full justify-center py-3.5">
+                  <button type="submit" className="btn-primary w-full justify-center py-3.5">
                     Envoyer →
                   </button>
                 </form>
@@ -89,7 +89,7 @@ export default function ContactPage() {
                   { icon: "🕐", title: "Horaires", val: "Mar–Sam : 8h30–20h00\nDim : 9h30–20h00\nLun : Fermé" },
                 ].map((item) => (
                   <div key={item.title} className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-[#1A6B47]/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 bg-[#1B5E20]/10 rounded-xl flex items-center justify-center flex-shrink-0">
                       <span className="text-lg">{item.icon}</span>
                     </div>
                     <div>

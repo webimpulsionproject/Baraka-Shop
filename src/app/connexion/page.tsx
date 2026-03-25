@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import BarakaLogo from "@/components/BarakaLogo";
+import Logo from "@/components/Logo";
 
 export default function ConnexionPage() {
   const router = useRouter();
@@ -40,9 +40,9 @@ export default function ConnexionPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex flex-col items-center gap-2">
-            <BarakaLogo size={48} />
+            <Logo size={48} />
             <div className="flex items-baseline gap-0.5">
-              <span className="font-playfair text-xl font-bold text-[#2E7D32]">Baraka</span>
+              <span className="font-playfair text-xl font-bold text-[#1B5E20]">Baraka</span>
               <span className="font-playfair text-xl font-bold text-[#C9922A]">Shop</span>
             </div>
           </Link>
@@ -125,7 +125,7 @@ export default function ConnexionPage() {
           </Link>
         </p>
 
-        {/* Lien admin discret */}
+        {/* Lien admin */}
         <div className="mt-8 pt-6 border-t border-gray-100 text-center">
           <Link
             href="/admin"

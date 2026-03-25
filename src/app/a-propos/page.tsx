@@ -4,9 +4,9 @@ import Footer from "@/components/Footer";
 export default function AProposPage() {
   return (
     <>
-      <div className="min-h-screen bg-[#FAF8F3]">
+      <div className="min-h-screen bg-[#FAFAF8]">
         {/* Hero */}
-        <div className="bg-[#1A6B47] py-20 text-center">
+        <div className="bg-[#1B5E20] py-20 text-center">
           <div className="max-w-3xl mx-auto px-4">
             <h1 className="font-playfair text-4xl md:text-5xl font-bold text-white mb-4">
               Notre Histoire
@@ -21,7 +21,7 @@ export default function AProposPage() {
         <div className="max-w-4xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
           <div className="prose prose-lg max-w-none text-gray-600 space-y-6">
             <p>
-              <strong className="text-[#1A6B47]">Baraka Shop</strong> est né d&apos;une passion pour la viande de qualité
+              <strong className="text-[#1B5E20]">Baraka Shop</strong> est né d&apos;une passion pour la viande de qualité
               et d&apos;un engagement envers la communauté locale. Fondée au 17 rue Corneille à
               Mons-en-Barœul, notre boucherie halal s&apos;est rapidement imposée comme une
               référence dans le quartier et au-delà.
@@ -41,7 +41,7 @@ export default function AProposPage() {
 
           {/* Values */}
           <div className="mt-16">
-            <h2 className="font-playfair text-3xl font-bold text-[#1A6B47] mb-8 text-center">
+            <h2 className="font-playfair text-3xl font-bold text-[#1B5E20] mb-8 text-center">
               Nos Valeurs
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -60,14 +60,14 @@ export default function AProposPage() {
           </div>
 
           {/* CTA */}
-          <div className="mt-16 text-center bg-[#1A6B47] rounded-2xl p-10">
+          <div className="mt-16 text-center bg-[#1B5E20] rounded-2xl p-10">
             <h2 className="font-playfair text-2xl font-bold text-white mb-3">
               Venez nous rendre visite
             </h2>
             <p className="text-white/75 mb-6">17 rue Corneille, 59370 Mons-en-Barœul</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/catalogue" className="btn-orange">
-                Voir le catalogue →
+              <Link href="/produits" className="btn-primary">
+                Voir nos produits →
               </Link>
               <Link href="/contact" className="btn-outline-white">
                 Nous contacter

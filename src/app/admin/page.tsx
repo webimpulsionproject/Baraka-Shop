@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { products as initialProducts, Product, ProductCategory, categories } from "@/lib/products";
-import BarakaLogo from "@/components/BarakaLogo";
+import { products as initialProducts, Product, ProductCategory, categories, promoCodes as initialPromoCodes, PromoCode } from "@/lib/data";
+import Logo from "@/components/Logo";
 import Link from "next/link";
 
-type Tab = "dashboard" | "produits" | "commandes" | "clients";
+type Tab = "dashboard" | "produits" | "commandes" | "clients" | "promotions";
 type OrderStatus = "En attente" | "En préparation" | "Prête" | "Livrée" | "Annulée";
 
 interface Order {
@@ -14,14 +14,14 @@ interface Order {
 }
 
 const MOCK_ORDERS: Order[] = [
-  { id: "#BS-042", client: "Ahmed Benali",   date: "25 mars 2025", items: "Entrecôte x2, Merguez x1",         total: 74.70, status: "Livrée",         mode: "Livraison" },
+  { id: "#BS-042", client: "Ahmed Benali",   date: "25 mars 2025", items: "Entrecôte x2, Merguez x1",         total: 74.70, status: "Livrée",         mode: "Click & Collect" },
   { id: "#BS-041", client: "Fatima Karimi",  date: "25 mars 2025", items: "Gigot d'Agneau x1",               total: 45.80, status: "En préparation", mode: "Click & Collect" },
   { id: "#BS-040", client: "Youssef Martin", date: "24 mars 2025", items: "Colis BBQ x1, Brochettes x2",     total: 87.70, status: "Prête",           mode: "Click & Collect" },
-  { id: "#BS-039", client: "Sara Dupont",    date: "24 mars 2025", items: "Poulet Fermier x2, Épices x1",    total: 30.70, status: "En attente",      mode: "Livraison" },
+  { id: "#BS-039", client: "Sara Dupont",    date: "24 mars 2025", items: "Poulet Fermier x2, Épices x1",    total: 30.70, status: "En attente",      mode: "Click & Collect" },
   { id: "#BS-038", client: "Karim Alaoui",   date: "23 mars 2025", items: "Côte de Bœuf x1",                total: 32.50, status: "Livrée",           mode: "Click & Collect" },
-  { id: "#BS-037", client: "Nadia Brahim",   date: "23 mars 2025", items: "Côtelettes d'Agneau x3",          total: 74.70, status: "Livrée",           mode: "Livraison" },
+  { id: "#BS-037", client: "Nadia Brahim",   date: "23 mars 2025", items: "Côtelettes d'Agneau x3",          total: 74.70, status: "Livrée",           mode: "Click & Collect" },
   { id: "#BS-036", client: "Omar Chakir",    date: "22 mars 2025", items: "Brochettes x2, Kefta x1",         total: 54.70, status: "Livrée",           mode: "Click & Collect" },
-  { id: "#BS-035", client: "Leila Mansour",  date: "22 mars 2025", items: "Blanc de Poulet x2",              total: 27.80, status: "Livrée",           mode: "Livraison" },
+  { id: "#BS-035", client: "Leila Mansour",  date: "22 mars 2025", items: "Blanc de Poulet x2",              total: 27.80, status: "Livrée",           mode: "Click & Collect" },
 ];
 
 const MOCK_CLIENTS = [
@@ -35,7 +35,7 @@ const MOCK_CLIENTS = [
 const STATUS_COLORS: Record<OrderStatus, string> = {
   "En attente":      "bg-yellow-50 text-yellow-700 border border-yellow-200",
   "En préparation":  "bg-blue-50 text-blue-700 border border-blue-200",
-  "Prête":           "bg-green-50 text-[#2E7D32] border border-green-200",
+  "Prête":           "bg-green-50 text-[#1B5E20] border border-green-200",
   "Livrée":          "bg-gray-50 text-gray-500 border border-gray-200",
   "Annulée":         "bg-red-50 text-red-600 border border-red-200",
 };
@@ -45,11 +45,14 @@ const EMPTY_PRODUCT = {
   weight: "", image: "", description: "", badge: "",
 };
 
+const EMPTY_PROMO = { code: "", type: "percent" as "percent" | "fixed", value: "", maxUses: "", expiry: "" };
+
 const NAV_ITEMS: { id: Tab; label: string; icon: string }[] = [
-  { id: "dashboard",  label: "Dashboard",  icon: "📊" },
-  { id: "produits",   label: "Produits",   icon: "🥩" },
-  { id: "commandes",  label: "Commandes",  icon: "📦" },
-  { id: "clients",    label: "Clients",    icon: "👥" },
+  { id: "dashboard",   label: "Dashboard",    icon: "📊" },
+  { id: "produits",    label: "Produits",     icon: "🥩" },
+  { id: "commandes",   label: "Commandes",    icon: "📦" },
+  { id: "clients",     label: "Clients",      icon: "👥" },
+  { id: "promotions",  label: "Promotions",   icon: "🔥" },
 ];
 
 // ── Login guard ───────────────────────────────────────────────────────────────
@@ -69,10 +72,10 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#2E7D32] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#1B5E20] flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm">
         <div className="text-center mb-7">
-          <div className="flex justify-center mb-3"><BarakaLogo size={52} /></div>
+          <div className="flex justify-center mb-3"><Logo size={52} /></div>
           <h1 className="font-playfair text-2xl font-bold text-gray-900">Administration</h1>
           <p className="text-gray-500 text-sm mt-1">Baraka Shop — Accès réservé</p>
         </div>
@@ -121,6 +124,8 @@ export default function AdminPage() {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState(EMPTY_PRODUCT);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [codes, setCodes] = useState<PromoCode[]>(initialPromoCodes);
+  const [promoForm, setPromoForm] = useState(EMPTY_PROMO);
 
   useEffect(() => {
     if (localStorage.getItem("baraka-admin") === "true") setAuthed(true);
@@ -139,9 +144,10 @@ export default function AdminPage() {
     const newProd: Product = {
       id: Date.now(),
       name: form.name,
+      slug: form.name.toLowerCase().replace(/\s+/g, "-"),
       category: form.category,
       price: parseFloat(form.price),
-      originalPrice: form.originalPrice ? parseFloat(form.originalPrice) : undefined,
+      promoPrice: form.originalPrice ? parseFloat(form.originalPrice) : undefined,
       weight: form.weight || undefined,
       image: form.image || "https://images.unsplash.com/photo-1529694157872-4e0c0f3b238b?w=400&h=300&fit=crop",
       description: form.description,
@@ -154,12 +160,26 @@ export default function AdminPage() {
     setShowForm(false);
   };
 
+  const handleAddPromo = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!promoForm.code || !promoForm.value) return;
+    const newCode: PromoCode = {
+      code: promoForm.code.toUpperCase(),
+      type: promoForm.type,
+      value: parseFloat(promoForm.value),
+      label: promoForm.type === "percent" ? `-${promoForm.value}% sur votre commande` : `-${promoForm.value}€ de réduction`,
+    };
+    setCodes(prev => [newCode, ...prev]);
+    setPromoForm(EMPTY_PROMO);
+  };
+
   const changeStatus = (id: string, status: OrderStatus) =>
     setOrders((prev) => prev.map((o) => o.id === id ? { ...o, status } : o));
 
   const todayOrders = orders.filter((o) => o.date.includes("25 mars"));
   const todayCA = todayOrders.reduce((s, o) => s + o.total, 0);
   const pending = orders.filter((o) => o.status === "En attente").length;
+  const promoProducts = prods.filter(p => p.promoPrice && p.promoPrice < p.price);
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -177,7 +197,7 @@ export default function AdminPage() {
       }`}>
         {/* Logo */}
         <div className="flex items-center gap-2.5 px-5 py-5 border-b border-white/10">
-          <BarakaLogo size={32} />
+          <Logo size={32} />
           <div>
             <p className="font-playfair text-sm font-bold text-white leading-tight">Baraka Shop</p>
             <p className="text-white/50 text-[10px]">Administration</p>
@@ -252,7 +272,7 @@ export default function AdminPage() {
               {/* Metrics */}
               <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
                 {[
-                  { icon: "📦", label: "Commandes aujourd'hui", val: todayOrders.length, color: "text-[#2E7D32]" },
+                  { icon: "📦", label: "Commandes aujourd'hui", val: todayOrders.length, color: "text-[#1B5E20]" },
                   { icon: "💶", label: "CA du jour",            val: `${todayCA.toFixed(2)} €`, color: "text-[#C9922A]" },
                   { icon: "⏳", label: "En attente",            val: pending,            color: "text-[#E64A19]" },
                   { icon: "🥩", label: "Produits actifs",       val: prods.filter((p) => p.inStock).length, color: "text-[#C62828]" },
@@ -325,8 +345,8 @@ export default function AdminPage() {
                       <input type="number" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="input-field" placeholder="28.90" required />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">Prix barré (€)</label>
-                      <input type="number" step="0.01" value={form.originalPrice} onChange={(e) => setForm({ ...form, originalPrice: e.target.value })} className="input-field" placeholder="32.90" />
+                      <label className="block text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">Prix promo (€)</label>
+                      <input type="number" step="0.01" value={form.originalPrice} onChange={(e) => setForm({ ...form, originalPrice: e.target.value })} className="input-field" placeholder="24.90" />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">Catégorie</label>
@@ -342,7 +362,7 @@ export default function AdminPage() {
                       <label className="block text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">Badge</label>
                       <select value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })} className="input-field">
                         <option value="">Aucun</option>
-                        <option>Nouveau</option><option>Promo</option><option>Bestseller</option>
+                        <option>Nouveau</option><option>Promo</option><option>Bestseller</option><option>Aïd</option>
                       </select>
                     </div>
                     <div>
@@ -387,10 +407,10 @@ export default function AdminPage() {
                             </div>
                           </td>
                           <td className="px-5 py-3 text-gray-400 text-xs hidden md:table-cell">{p.category}</td>
-                          <td className="px-5 py-3 text-right font-semibold text-[#2E7D32]">{p.price.toFixed(2)} €</td>
+                          <td className="px-5 py-3 text-right font-semibold text-[#1B5E20]">{p.price.toFixed(2)} €</td>
                           <td className="px-5 py-3 text-center text-gray-400 text-xs hidden lg:table-cell">{p.weight || "—"}</td>
                           <td className="px-5 py-3 text-center">
-                            <span className={`text-xs font-medium px-2 py-1 rounded-md ${p.inStock ? "bg-green-50 text-[#2E7D32] border border-green-200" : "bg-red-50 text-red-600 border border-red-200"}`}>
+                            <span className={`text-xs font-medium px-2 py-1 rounded-md ${p.inStock ? "bg-green-50 text-[#1B5E20] border border-green-200" : "bg-red-50 text-red-600 border border-red-200"}`}>
                               {p.inStock ? "En stock" : "Rupture"}
                             </span>
                           </td>
@@ -487,13 +507,186 @@ export default function AdminPage() {
                         <td className="px-5 py-3 text-gray-400 text-xs hidden md:table-cell">{c.email}</td>
                         <td className="px-5 py-3 text-gray-400 text-xs hidden lg:table-cell">{c.tel}</td>
                         <td className="px-5 py-3 text-center font-semibold text-gray-800">{c.orders}</td>
-                        <td className="px-5 py-3 text-right font-semibold text-[#2E7D32]">{c.total.toFixed(2)} €</td>
+                        <td className="px-5 py-3 text-right font-semibold text-[#1B5E20]">{c.total.toFixed(2)} €</td>
                         <td className="px-5 py-3 text-center text-gray-400 text-xs hidden sm:table-cell">{c.since}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
+            </div>
+          )}
+
+          {/* ── Promotions ── */}
+          {tab === "promotions" && (
+            <div className="space-y-6">
+
+              {/* Promo produits */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
+                  <h2 className="font-semibold text-gray-900">Promotions Produits ({promoProducts.length})</h2>
+                  <span className="text-xs text-gray-400">Produits avec prix promo actif</span>
+                </div>
+                {promoProducts.length === 0 ? (
+                  <div className="px-6 py-10 text-center text-gray-400 text-sm">Aucun produit en promotion actuellement.</div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead className="bg-gray-50/80">
+                        <tr className="text-xs text-gray-500 uppercase tracking-wide">
+                          <th className="px-5 py-3 text-left">Produit</th>
+                          <th className="px-5 py-3 text-right">Prix normal</th>
+                          <th className="px-5 py-3 text-right">Prix promo</th>
+                          <th className="px-5 py-3 text-center">Remise</th>
+                          <th className="px-5 py-3 text-left hidden md:table-cell">Fin promo</th>
+                          <th className="px-5 py-3 text-center">Statut</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-50">
+                        {promoProducts.map((p) => {
+                          const discPct = Math.round(((p.price - p.promoPrice!) / p.price) * 100);
+                          return (
+                            <tr key={p.id} className="hover:bg-gray-50/50">
+                              <td className="px-5 py-3">
+                                <div className="flex items-center gap-3">
+                                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                                  <img src={p.image} alt={p.name} className="w-9 h-9 rounded-lg object-cover bg-gray-100" />
+                                  <span className="font-medium text-gray-900 text-sm truncate max-w-[150px]">{p.name}</span>
+                                </div>
+                              </td>
+                              <td className="px-5 py-3 text-right text-gray-400 line-through text-xs">{p.price.toFixed(2)} €</td>
+                              <td className="px-5 py-3 text-right font-bold text-[#C62828]">{p.promoPrice!.toFixed(2)} €</td>
+                              <td className="px-5 py-3 text-center">
+                                <span className="bg-[#C62828]/10 text-[#C62828] text-xs font-bold px-2 py-0.5 rounded-md">-{discPct}%</span>
+                              </td>
+                              <td className="px-5 py-3 text-xs text-gray-400 hidden md:table-cell">
+                                {p.promoEndDate ? new Date(p.promoEndDate).toLocaleDateString("fr-FR") : "—"}
+                              </td>
+                              <td className="px-5 py-3 text-center">
+                                <span className="bg-green-50 text-[#1B5E20] border border-green-200 text-xs font-medium px-2 py-0.5 rounded-md">Active</span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+
+              {/* Codes promo */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-50">
+                  <h2 className="font-semibold text-gray-900">Codes Promotionnels ({codes.length})</h2>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead className="bg-gray-50/80">
+                      <tr className="text-xs text-gray-500 uppercase tracking-wide">
+                        <th className="px-5 py-3 text-left">Code</th>
+                        <th className="px-5 py-3 text-left">Description</th>
+                        <th className="px-5 py-3 text-center">Type</th>
+                        <th className="px-5 py-3 text-center">Valeur</th>
+                        <th className="px-5 py-3 text-center">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-50">
+                      {codes.map((c) => (
+                        <tr key={c.code} className="hover:bg-gray-50/50">
+                          <td className="px-5 py-3">
+                            <span className="font-mono font-bold text-[#1B5E20] bg-[#1B5E20]/8 px-2 py-1 rounded-md text-xs">{c.code}</span>
+                          </td>
+                          <td className="px-5 py-3 text-gray-500 text-xs">{c.label}</td>
+                          <td className="px-5 py-3 text-center">
+                            <span className={`text-xs font-medium px-2 py-0.5 rounded-md ${c.type === "percent" ? "bg-blue-50 text-blue-600" : "bg-purple-50 text-purple-600"}`}>
+                              {c.type === "percent" ? "%" : "Fixe (€)"}
+                            </span>
+                          </td>
+                          <td className="px-5 py-3 text-center font-bold text-gray-900">
+                            {c.type === "percent" ? `${c.value}%` : `${c.value} €`}
+                          </td>
+                          <td className="px-5 py-3 text-center">
+                            <button
+                              onClick={() => setCodes(prev => prev.filter(x => x.code !== c.code))}
+                              className="text-xs text-[#E64A19] hover:text-[#BF360C] font-medium"
+                            >
+                              Supprimer
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Ajouter un code */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <h3 className="font-playfair text-lg font-bold text-gray-900 mb-5">Ajouter un code promo</h3>
+                <form onSubmit={handleAddPromo} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">Code *</label>
+                    <input
+                      value={promoForm.code}
+                      onChange={(e) => setPromoForm({ ...promoForm, code: e.target.value.toUpperCase() })}
+                      className="input-field"
+                      placeholder="PROMO20"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">Type</label>
+                    <select
+                      value={promoForm.type}
+                      onChange={(e) => setPromoForm({ ...promoForm, type: e.target.value as "percent" | "fixed" })}
+                      className="input-field"
+                    >
+                      <option value="percent">Pourcentage (%)</option>
+                      <option value="fixed">Montant fixe (€)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">
+                      Valeur * {promoForm.type === "percent" ? "(%)" : "(€)"}
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={promoForm.value}
+                      onChange={(e) => setPromoForm({ ...promoForm, value: e.target.value })}
+                      className="input-field"
+                      placeholder={promoForm.type === "percent" ? "10" : "5"}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">Utilisations max</label>
+                    <input
+                      type="number"
+                      value={promoForm.maxUses}
+                      onChange={(e) => setPromoForm({ ...promoForm, maxUses: e.target.value })}
+                      className="input-field"
+                      placeholder="100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">Date d&apos;expiration</label>
+                    <input
+                      type="date"
+                      value={promoForm.expiry}
+                      onChange={(e) => setPromoForm({ ...promoForm, expiry: e.target.value })}
+                      className="input-field"
+                    />
+                  </div>
+                  <div className="flex items-end">
+                    <button type="submit" className="btn-promo text-sm py-3 w-full justify-center">
+                      + Créer le code
+                    </button>
+                  </div>
+                </form>
+              </div>
+
             </div>
           )}
 

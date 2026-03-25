@@ -1,39 +1,37 @@
 "use client";
-
 import { useState } from "react";
 import Image from "next/image";
-import { Product } from "@/lib/products";
+import { Product } from "@/lib/data";
 import { useCart } from "@/lib/cart-context";
 
-interface ProductCardProps {
-  product: Product;
-}
-
 const badgeColors: Record<string, string> = {
-  Nouveau: "bg-[#2E7D32] text-white",
-  Promo:   "bg-[#C62828] text-white",
+  Nouveau:    "bg-[#1B5E20] text-white",
+  Promo:      "bg-[#C62828] text-white",
   Bestseller: "bg-[#C9922A] text-white",
+  "Aïd":      "bg-[#1B5E20] text-white",
 };
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
 
-  const discount =
-    product.originalPrice && product.originalPrice > product.price
-      ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-      : null;
+  const activePrice = product.promoPrice ?? product.price;
+  const isPromo = !!product.promoPrice && product.promoPrice < product.price;
+  const savings = isPromo ? (product.price - product.promoPrice!).toFixed(2) : null;
+  const discountPct = isPromo
+    ? Math.round(((product.price - product.promoPrice!) / product.price) * 100)
+    : null;
 
   const handleAdd = () => {
-    addItem(product);
+    addItem({ ...product, price: activePrice } as Product);
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   };
 
   return (
-    <div className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 flex flex-col">
+    <div className={`group bg-white rounded-xl overflow-hidden shadow-sm transition-all duration-200 border flex flex-col ${isPromo ? "border-[#C62828]/30 hover:border-[#C62828]/60" : "border-gray-100"} hover:shadow-md hover:-translate-y-0.5`}>
       {/* Image */}
-      <div className="relative h-48 w-full overflow-hidden bg-gray-50">
+      <div className="relative h-52 w-full overflow-hidden bg-gray-50">
         <Image
           src={product.image}
           alt={product.name}
@@ -42,68 +40,66 @@ export default function ProductCard({ product }: ProductCardProps) {
           className="object-cover group-hover:scale-[1.03] transition-transform duration-300"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
         />
-        {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-          <span className="inline-flex items-center gap-1 bg-[#2E7D32] text-white text-xs font-semibold px-2 py-0.5 rounded-md shadow-sm">
-            ✓ Halal
-          </span>
-          {product.badge && (
-            <span className={`text-xs font-semibold px-2 py-0.5 rounded-md shadow-sm ${badgeColors[product.badge]}`}>
-              {product.badge}
-            </span>
-          )}
+        {/* Discount badge */}
+        {discountPct && (
+          <div className="absolute top-3 left-3 bg-[#C62828] text-white text-sm font-bold px-2.5 py-1 rounded-lg shadow-md">
+            -{discountPct}%
+          </div>
+        )}
+        {/* Halal badge */}
+        <div className="absolute top-3 right-3 bg-[#1B5E20] text-white text-xs font-semibold px-2 py-0.5 rounded-md">
+          Halal ✓
         </div>
-        {discount && (
-          <span className="absolute top-3 right-3 bg-[#C62828] text-white text-xs font-bold px-2 py-0.5 rounded-md shadow-sm">
-            -{discount}%
-          </span>
+        {/* Optional badge (not promo, already shown as %) */}
+        {product.badge && product.badge !== "Promo" && (
+          <div className={`absolute bottom-3 left-3 text-xs font-semibold px-2 py-0.5 rounded-md ${badgeColors[product.badge]}`}>
+            {product.badge}
+          </div>
         )}
       </div>
 
       {/* Body */}
       <div className="p-4 flex flex-col gap-1.5 flex-1">
-        <span className="text-xs text-gray-400 uppercase tracking-wider font-medium">
-          {product.category}
-        </span>
-        <h3 className="font-playfair font-bold text-gray-900 text-base leading-snug group-hover:text-[#2E7D32] transition-colors">
+        <span className="text-xs text-gray-400 uppercase tracking-wider font-medium">{product.category}</span>
+        <h3 className="font-playfair font-bold text-gray-900 text-base leading-snug group-hover:text-[#1B5E20] transition-colors">
           {product.name}
         </h3>
-        {product.weight && (
-          <span className="text-xs text-gray-400">{product.weight}</span>
-        )}
-        <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed flex-1">
-          {product.description}
-        </p>
+        {product.weight && <span className="text-xs text-gray-400">{product.weight}</span>}
+        <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed flex-1">{product.description}</p>
 
-        {/* Price + CTA */}
-        <div className="pt-3 border-t border-gray-100 flex items-center justify-between gap-2 mt-auto">
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-lg font-bold text-[#2E7D32]">
-              {product.price.toFixed(2)} €
-            </span>
-            {product.originalPrice && (
-              <span className="text-sm text-gray-400 line-through">
-                {product.originalPrice.toFixed(2)} €
-              </span>
-            )}
-          </div>
+        {/* Price */}
+        <div className="pt-3 border-t border-gray-100 mt-auto">
+          {isPromo ? (
+            <div className="mb-2">
+              <div className="flex items-baseline gap-2">
+                <span className="text-xl font-bold text-[#C62828]">{activePrice.toFixed(2)} €</span>
+                <span className="text-sm text-gray-400 line-through">{product.price.toFixed(2)} €</span>
+              </div>
+              <span className="text-xs text-[#C62828] font-medium">Économisez {savings} €</span>
+            </div>
+          ) : (
+            <div className="mb-2">
+              <span className="text-xl font-bold text-[#1B5E20]">{activePrice.toFixed(2)} €</span>
+            </div>
+          )}
           <button
             onClick={handleAdd}
-            className={`flex items-center gap-1.5 text-white text-xs font-semibold px-3 py-2 rounded-lg transition-all duration-200 whitespace-nowrap ${
+            className={`w-full flex items-center justify-center gap-1.5 text-white text-sm font-semibold py-2.5 rounded-lg transition-all duration-200 ${
               added
-                ? "bg-[#2E7D32] scale-95"
+                ? "bg-[#1B5E20] scale-[0.98]"
+                : isPromo
+                ? "bg-[#C62828] hover:bg-[#8E0000] hover:shadow-sm"
                 : "bg-[#E64A19] hover:bg-[#BF360C] hover:shadow-sm"
             }`}
-            aria-label={`Ajouter ${product.name} au panier`}
           >
             {added ? (
               <>✓ Ajouté !</>
             ) : (
               <>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>
-                Ajouter
+                Commander
               </>
             )}
           </button>

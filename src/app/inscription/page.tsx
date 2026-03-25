@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Logo from "@/components/Logo";
 
 export default function InscriptionPage() {
   const router = useRouter();
@@ -55,7 +56,7 @@ export default function InscriptionPage() {
   }) => (
     <div>
       <label className="block text-sm font-medium text-gray-700 mb-1.5">
-        {label} {required && <span className="text-[#E8401C]">*</span>}
+        {label} {required && <span className="text-[#E64A19]">*</span>}
       </label>
       <input
         type={type}
@@ -69,14 +70,16 @@ export default function InscriptionPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center px-4 py-12">
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-lg">
+    <div className="min-h-screen bg-[#FAFAF8] flex items-center justify-center px-4 py-12">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 w-full max-w-lg">
         {/* Logo */}
         <div className="text-center mb-7">
-          <Link href="/" className="inline-flex items-center gap-1 justify-center">
-            <span className="text-2xl">🥩</span>
-            <span className="font-playfair text-2xl font-bold text-[#1A6B47]">Baraka</span>
-            <span className="font-playfair text-2xl font-bold text-[#C9922A]">Shop</span>
+          <Link href="/" className="inline-flex flex-col items-center gap-2 justify-center">
+            <Logo size={44} />
+            <div className="flex items-baseline gap-0.5">
+              <span className="font-playfair text-xl font-bold text-[#1B5E20]">Baraka</span>
+              <span className="font-playfair text-xl font-bold text-[#C9922A]">Shop</span>
+            </div>
           </Link>
           <h1 className="font-playfair text-2xl font-bold text-gray-900 mt-4">Créer un compte</h1>
           <p className="text-gray-500 text-sm mt-1">Profitez du Click & Collect et de la livraison</p>
@@ -113,20 +116,20 @@ export default function InscriptionPage() {
               type="checkbox"
               checked={cgv}
               onChange={(e) => setCgv(e.target.checked)}
-              className="mt-0.5 h-4 w-4 accent-[#E8401C] cursor-pointer"
+              className="mt-0.5 h-4 w-4 accent-[#E64A19] cursor-pointer"
             />
             <span className="text-sm text-gray-600">
               J&apos;accepte les{" "}
-              <Link href="#" className="text-[#E8401C] hover:underline font-medium">CGV</Link>
+              <Link href="#" className="text-[#E64A19] hover:underline font-medium">CGV</Link>
               {" "}et la{" "}
-              <Link href="#" className="text-[#E8401C] hover:underline font-medium">politique de confidentialité</Link>
+              <Link href="#" className="text-[#E64A19] hover:underline font-medium">politique de confidentialité</Link>
             </span>
           </label>
 
           <button
             type="submit"
             disabled={loading}
-            className="btn-orange w-full justify-center py-3.5 text-base mt-2 disabled:opacity-60"
+            className="btn-primary w-full justify-center py-3.5 text-base mt-2 disabled:opacity-60"
           >
             {loading ? "Création du compte…" : "Créer mon compte"}
           </button>
@@ -134,7 +137,7 @@ export default function InscriptionPage() {
 
         <p className="text-center text-sm text-gray-500 mt-6">
           Déjà un compte ?{" "}
-          <Link href="/connexion" className="text-[#E8401C] font-semibold hover:underline">
+          <Link href="/connexion" className="text-[#E64A19] font-semibold hover:underline">
             Se connecter →
           </Link>
         </p>
