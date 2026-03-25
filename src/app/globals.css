@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-playfair: 'Playfair Display', serif;
+  --font-dm-sans: 'DM Sans', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #FAF8F3;
+  font-family: var(--font-dm-sans);
+  color: #1a1a1a;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-playfair);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-[#C9922A] hover:bg-[#A87520] text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-200;
+  }
+
+  .btn-secondary {
+    @apply border-2 border-white text-white hover:bg-white hover:text-[#1A6B47] font-semibold px-6 py-3 rounded-lg transition-colors duration-200;
+  }
+
+  .section-title {
+    @apply font-playfair text-3xl md:text-4xl font-bold text-[#1A6B47] mb-2;
+  }
+
+  .section-subtitle {
+    @apply text-gray-600 text-lg mb-8;
+  }
+}
