@@ -4,6 +4,7 @@ import "./globals.css";
 import { CartProvider } from "@/lib/cart-context";
 import Navbar from "@/components/Navbar";
 import PromoTopBar from "@/components/PromoTopBar";
+import CookieBanner from "@/components/CookieBanner";
 
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair", display: "swap" });
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans", display: "swap" });
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <PromoTopBar />
           <Navbar />
           <main>{children}</main>
+          <CookieBanner />
         </CartProvider>
       </body>
     </html>

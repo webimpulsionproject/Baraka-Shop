@@ -73,9 +73,10 @@ export default function Footer() {
         </div>
         <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/30">
           <p>© {year} Baraka Shop — Mons-en-Barœul. Tous droits réservés.</p>
-          <div className="flex gap-4">
-            <Link href="#" className="hover:text-white/60 transition-colors">Mentions légales</Link>
-            <Link href="#" className="hover:text-white/60 transition-colors">CGV</Link>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Link href="/mentions-legales" className="hover:text-white/60 transition-colors">Mentions légales</Link>
+            <Link href="/cgv" className="hover:text-white/60 transition-colors">CGV</Link>
+            <Link href="/politique-de-confidentialite" className="hover:text-white/60 transition-colors">Confidentialité & RGPD</Link>
           </div>
         </div>
       </div>

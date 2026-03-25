@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import Footer from "@/components/Footer";
 
 export default function ContactPage() {
@@ -73,6 +74,14 @@ export default function ContactPage() {
                       required
                     />
                   </div>
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    En soumettant ce formulaire, vous acceptez que vos données soient traitées
+                    par Baraka Shop pour répondre à votre demande, conformément à notre{" "}
+                    <Link href="/politique-de-confidentialite" className="text-[#1B5E20] underline hover:text-[#2E7D32]">
+                      politique de confidentialité
+                    </Link>
+                    . Vos données ne sont pas transmises à des tiers.
+                  </p>
                   <button type="submit" className="btn-primary w-full justify-center py-3.5">
                     Envoyer →
                   </button>

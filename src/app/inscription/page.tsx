@@ -12,6 +12,7 @@ export default function InscriptionPage() {
     password: "", confirm: "", adresse: "", cp: "", ville: "",
   });
   const [cgv, setCgv] = useState(false);
+  const [rgpd, setRgpd] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -35,6 +36,10 @@ export default function InscriptionPage() {
     }
     if (!cgv) {
       setError("Veuillez accepter les CGV.");
+      return;
+    }
+    if (!rgpd) {
+      setError("Veuillez accepter la politique de confidentialité.");
       return;
     }
     setLoading(true);
@@ -111,18 +116,39 @@ export default function InscriptionPage() {
             <Field label="Ville" name="ville" placeholder="Mons-en-Barœul" />
           </div>
 
-          <label className="flex items-start gap-3 cursor-pointer group">
+          {/* CGV */}
+          <label className="flex items-start gap-3 cursor-pointer">
             <input
               type="checkbox"
               checked={cgv}
               onChange={(e) => setCgv(e.target.checked)}
-              className="mt-0.5 h-4 w-4 accent-[#E64A19] cursor-pointer"
+              className="mt-0.5 h-4 w-4 accent-[#E64A19] cursor-pointer flex-shrink-0"
             />
             <span className="text-sm text-gray-600">
-              J&apos;accepte les{" "}
-              <Link href="#" className="text-[#E64A19] hover:underline font-medium">CGV</Link>
-              {" "}et la{" "}
-              <Link href="#" className="text-[#E64A19] hover:underline font-medium">politique de confidentialité</Link>
+              J&apos;ai lu et j&apos;accepte les{" "}
+              <Link href="/cgv" target="_blank" className="text-[#E64A19] hover:underline font-medium">
+                Conditions Générales de Vente
+              </Link>{" "}
+              <span className="text-[#E64A19]">*</span>
+            </span>
+          </label>
+
+          {/* RGPD */}
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={rgpd}
+              onChange={(e) => setRgpd(e.target.checked)}
+              className="mt-0.5 h-4 w-4 accent-[#1B5E20] cursor-pointer flex-shrink-0"
+            />
+            <span className="text-sm text-gray-600">
+              J&apos;accepte que mes données personnelles soient traitées par Baraka Shop
+              pour la gestion de mon compte et de mes commandes, conformément à la{" "}
+              <Link href="/politique-de-confidentialite" target="_blank" className="text-[#1B5E20] hover:underline font-medium">
+                politique de confidentialité
+              </Link>
+              . Je peux exercer mes droits RGPD à tout moment.{" "}
+              <span className="text-[#E64A19]">*</span>
             </span>
           </label>
 
