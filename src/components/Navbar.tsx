@@ -26,13 +26,13 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-100">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-16">
+        <div className="flex items-center h-[68px]">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 mr-10">
-            <Logo size={36} />
-            <div className="hidden sm:flex items-baseline gap-0.5">
-              <span className="font-playfair text-xl font-bold text-[#1B5E20]">Baraka</span>
-              <span className="font-playfair text-xl font-bold text-[#C9922A]">Shop</span>
+          <Link href="/" className="flex items-center gap-3 flex-shrink-0 mr-10">
+            <Logo size={48} />
+            <div className="hidden sm:flex items-baseline gap-1">
+              <span className="font-playfair text-2xl font-bold text-[#1B5E20]">Baraka</span>
+              <span className="font-playfair text-2xl font-bold text-[#C9922A]">Shop</span>
             </div>
           </Link>
 

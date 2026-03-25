@@ -131,6 +131,31 @@ export default function AdminPage() {
     if (localStorage.getItem("baraka-admin") === "true") setAuthed(true);
   }, []);
 
+  // Charger les commandes réelles depuis la DB dès que connecté
+  useEffect(() => {
+    if (!authed) return;
+    fetch("/api/commandes")
+      .then((r) => r.json())
+      .then((data: Array<{
+        id: number; reference: string; clientName: string;
+        createdAt: string; items: Array<{ name: string; qty: number }>;
+        total: number; status: string; mode: string;
+      }>) => {
+        if (!Array.isArray(data) || data.length === 0) return;
+        const mapped: Order[] = data.map((o) => ({
+          id: o.reference,
+          client: o.clientName,
+          date: new Date(o.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }),
+          items: o.items.map((i) => `${i.name} x${i.qty}`).join(", "),
+          total: o.total,
+          status: (o.status as OrderStatus) || "En attente",
+          mode: o.mode === "click-collect" ? "Click & Collect" : "Livraison",
+        }));
+        setOrders(mapped);
+      })
+      .catch(() => { /* garde les MOCK_ORDERS en fallback */ });
+  }, [authed]);
+
   if (!authed) return <LoginScreen onLogin={() => setAuthed(true)} />;
 
   const handleLogout = () => {

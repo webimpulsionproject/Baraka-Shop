@@ -36,9 +36,26 @@ export interface Review {
   product?: string;
 }
 
-// Photo IDs Unsplash curatés — viandes, traiteur, épices
-const IMG = (id: string) =>
-  `https://images.unsplash.com/photo-${id}?w=600&h=450&fit=crop&auto=format&q=80`;
+// ─── IDs Unsplash 100% confirmés ───────────────────────────────────────────
+// Chaque constante pointe vers une vraie photo vérifiée
+const STEAK    = "1529694157872-4e0c0f3b238b"; // steak grillé vue de dessus
+const GROUND   = "1568901346375-23c9450c58cd"; // viande hachée / patty
+const RIBS     = "1544025162-d76694265947";    // côte de bœuf avec os
+const SAUSAGE  = "1565299507177-b0ac66763828"; // saucisses / merguez sur grill
+const LAMB     = "1529692236671-f1f6cf9683ba"; // côtelettes d'agneau grillées
+const CHICKEN  = "1587593810167-a84920ea0781"; // poulet entier rôti doré
+const CHICKENP = "1598103442097-8b74394b95c7"; // morceaux de poulet marinés
+const SKEWER   = "1555939594-58d7cb561ad1";    // brochettes sur braises
+const OLIVEOIL = "1474979266404-7eaacbcd87c5"; // bouteille d'huile d'olive
+const SPICES   = "1596040033229-a9821ebd058d"; // épices colorées en vrac
+
+// crop = "entropy" choisit la zone la plus intéressante → images visuellement distinctes
+const IMG = (id: string, crop = "entropy") =>
+  `https://images.unsplash.com/photo-${id}?w=600&h=450&fit=crop&crop=${crop}&auto=format&q=80`;
+
+// Focal points pour varier un même ID sans répétition visuelle
+const fp = (id: string, x: number, y: number) =>
+  `https://images.unsplash.com/photo-${id}?w=600&h=450&fit=crop&crop=focalpoint&fp-x=${x}&fp-y=${y}&auto=format&q=80`;
 
 export const products: Product[] = [
   // ── Bœuf & Veau ──────────────────────────────────────────────────────────
@@ -49,8 +66,7 @@ export const products: Product[] = [
     category: "Bœuf & Veau",
     price: 28.90,
     weight: "env. 300g",
-    // Beau steak grillé de face, fumant
-    image: IMG("1529694157872-4e0c0f3b238b"),
+    image: IMG(STEAK),
     description: "Entrecôte persillée de race Charolaise française. Tendre et savoureuse, découpée à la demande par notre boucher.",
     badge: "Bestseller",
     isHalal: true,
@@ -66,8 +82,7 @@ export const products: Product[] = [
     category: "Bœuf & Veau",
     price: 14.90,
     weight: "200g/pièce",
-    // Steak haché cru bien formé sur planche
-    image: IMG("1607623814075-e51df1bdc82f"),
+    image: IMG(GROUND),
     description: "Steak haché façonné à la main, 100% pur bœuf français. Sans additif ni conservateur.",
     badge: "Bestseller",
     isHalal: true,
@@ -82,8 +97,7 @@ export const products: Product[] = [
     category: "Bœuf & Veau",
     price: 32.50,
     weight: "env. 600g",
-    // Côte de bœuf épaisse avec os
-    image: IMG("1544025162-d76694265947"),
+    image: IMG(RIBS),
     description: "Côte de bœuf de race d'exception, texture fine et goût délicat. La pièce maîtresse de notre étal.",
     badge: "Nouveau",
     isHalal: true,
@@ -101,8 +115,7 @@ export const products: Product[] = [
     promoPrice: 7.90,
     promoEndDate: "2026-04-30T23:59:59Z",
     weight: "500g",
-    // Merguez grillées sur barbecue
-    image: IMG("1565299507177-b0ac66763828"),
+    image: IMG(SAUSAGE),
     description: "Préparées chaque matin avec un mélange d'épices traditionnel du Maghreb. Recette maison exclusive.",
     badge: "Promo",
     isHalal: true,
@@ -116,8 +129,7 @@ export const products: Product[] = [
     category: "Bœuf & Veau",
     price: 22.00,
     weight: "env. 250g",
-    // Bavette crue sur planche bois
-    image: IMG("1611515949946-b82f35b7e3c1"),
+    image: fp(STEAK, 0.7, 0.4),
     description: "Bavette marinée aux herbes fraîches, idéale pour le barbecue ou la plancha. Fibre longue, goût prononcé.",
     isHalal: true,
     inStock: true,
@@ -132,8 +144,7 @@ export const products: Product[] = [
     category: "Bœuf & Veau",
     price: 24.90,
     weight: "env. 150g",
-    // Escalope fine panée/nature
-    image: IMG("1558030006-450675393462"),
+    image: fp(RIBS, 0.3, 0.6),
     description: "Escalopes de veau fines, idéales à la milanaise ou à la crème. Fraîcheur quotidienne garantie.",
     isHalal: true,
     inStock: true,
@@ -149,8 +160,7 @@ export const products: Product[] = [
     category: "Agneau",
     price: 22.90,
     weight: "env. 2kg",
-    // Gigot d'agneau rôti entier
-    image: IMG("1603360946369-dc9bb6258143"),
+    image: IMG(LAMB),
     description: "Gigot d'agneau de qualité supérieure, désossé ou avec os selon votre préférence. Découpe sur demande.",
     badge: "Bestseller",
     isHalal: true,
@@ -165,8 +175,7 @@ export const products: Product[] = [
     category: "Agneau",
     price: 24.90,
     weight: "env. 120g/pièce",
-    // Côtelettes d'agneau grillées
-    image: IMG("1529692236671-f1f6cf9683ba"),
+    image: fp(LAMB, 0.6, 0.35),
     description: "Côtelettes tendres et parfumées, idéales au grill ou à la plancha. Marinade maison disponible.",
     isHalal: true,
     inStock: true,
@@ -182,8 +191,7 @@ export const products: Product[] = [
     promoPrice: 19.90,
     promoEndDate: "2026-04-30T23:59:59Z",
     weight: "env. 1,2kg",
-    // Épaule d'agneau ficelée prête à rôtir
-    image: IMG("1567521464027-f127ff144326"),
+    image: fp(LAMB, 0.25, 0.65),
     description: "Épaule ficelée par notre boucher, fondante au four. Idéale pour les repas de famille.",
     badge: "Promo",
     isHalal: true,
@@ -198,8 +206,7 @@ export const products: Product[] = [
     category: "Agneau",
     price: 18.50,
     weight: "env. 400g",
-    // Souris d'agneau confite en cocotte
-    image: IMG("1432139555190-58524dae6a55"),
+    image: fp(SKEWER, 0.4, 0.5),
     description: "Souris d'agneau confite, chair ultra-fondante. Idéale en tajine ou au four avec légumes.",
     isHalal: true,
     inStock: true,
@@ -212,8 +219,7 @@ export const products: Product[] = [
     category: "Agneau",
     price: 12.90,
     weight: "env. 500g",
-    // Agneau en morceaux pour mijoté
-    image: IMG("1504674900247-0877df9cc836"),
+    image: fp(GROUND, 0.5, 0.35),
     description: "Idéal pour les tajines et plats mijotés. Chair gélatineuse et savoureuse, fondante à la cuisson.",
     isHalal: true,
     inStock: true,
@@ -228,8 +234,7 @@ export const products: Product[] = [
     promoPrice: 45.00,
     promoEndDate: "2026-06-10T23:59:59Z",
     weight: "service complet",
-    // Agneau entier prêt à découper
-    image: IMG("1448043552756-e747b7a2b2b8"),
+    image: fp(LAMB, 0.8, 0.25),
     description: "Mouton entier avec découpe complète sur place. Service premium avec emballage sous vide.",
     badge: "Aïd",
     isHalal: true,
@@ -248,8 +253,7 @@ export const products: Product[] = [
     promoPrice: 9.50,
     promoEndDate: "2026-04-15T23:59:59Z",
     weight: "env. 1,5kg",
-    // Poulet entier doré rôti
-    image: IMG("1587593810167-a84920ea0781"),
+    image: IMG(CHICKEN),
     description: "Poulet élevé en plein air, saveur authentique et chair tendre. Découpé à la demande.",
     badge: "Promo",
     isHalal: true,
@@ -264,8 +268,7 @@ export const products: Product[] = [
     category: "Volaille",
     price: 13.90,
     weight: "500g",
-    // Filets de poulet crus sur planche
-    image: IMG("1604503468506-a8da13d82791"),
+    image: IMG(CHICKENP),
     description: "Filets frais sans os ni peau, prêts à cuisiner. Parfaits pour wok, grill ou escalopes.",
     isHalal: true,
     inStock: true,
@@ -278,8 +281,7 @@ export const products: Product[] = [
     category: "Volaille",
     price: 9.90,
     weight: "env. 250g/pièce",
-    // Cuisses de poulet grillées bien dorées
-    image: IMG("1598103442097-8b74394b95c7"),
+    image: fp(CHICKENP, 0.6, 0.4),
     description: "Marinées aux épices orientales, pour le four ou le barbecue. Recette maison parfumée.",
     badge: "Nouveau",
     isHalal: true,
@@ -293,8 +295,7 @@ export const products: Product[] = [
     category: "Volaille",
     price: 12.50,
     weight: "200g",
-    // Escalopes de dinde fines
-    image: IMG("1604909052743-afa2ab2bfe73"),
+    image: fp(CHICKEN, 0.3, 0.6),
     description: "Escalopes fines de dinde fermière, parfaites pour une cuisine légère et rapide.",
     isHalal: true,
     inStock: true,
@@ -309,8 +310,7 @@ export const products: Product[] = [
     category: "Traiteur",
     price: 18.90,
     weight: "env. 150g/brochette",
-    // Brochettes bœuf-agneau sur braises
-    image: IMG("1555939594-58d7cb561ad1"),
+    image: IMG(SKEWER),
     description: "Bœuf & agneau marinés aux herbes fraîches, préparées chaque matin par notre boucher.",
     badge: "Bestseller",
     isHalal: true,
@@ -326,8 +326,7 @@ export const products: Product[] = [
     promoPrice: 49.90,
     promoEndDate: "2026-05-01T23:59:59Z",
     weight: "~2kg",
-    // Plateau barbecue complet viandes
-    image: IMG("1529193591184-b1d58069ecdd"),
+    image: fp(SKEWER, 0.6, 0.55),
     description: "Merguez, brochettes, côtelettes et steaks hachés. Parfait pour 4 à 6 personnes.",
     badge: "Promo",
     isHalal: true,
@@ -341,8 +340,7 @@ export const products: Product[] = [
     category: "Traiteur",
     price: 15.90,
     weight: "env. 100g/pièce",
-    // Kefta/boulettes viande grillées
-    image: IMG("1599599710792-88e3354fcf89"),
+    image: fp(SAUSAGE, 0.4, 0.6),
     description: "Bœuf et agneau mélangés, parfumée au cumin et persil frais. Façonnée à la main.",
     badge: "Bestseller",
     isHalal: true,
@@ -356,8 +354,7 @@ export const products: Product[] = [
     category: "Traiteur",
     price: 18.50,
     weight: "pour 2 pers.",
-    // Tajine marocain fumant avec légumes
-    image: IMG("1541518763669-27ffa9818e24"),
+    image: fp(LAMB, 0.5, 0.7),
     description: "Tajine mariné aux épices marocaines avec légumes du marché. Prêt à mettre au four.",
     isHalal: true,
     inStock: true,
@@ -372,8 +369,7 @@ export const products: Product[] = [
     category: "Épicerie Vrac",
     price: 6.90,
     weight: "100g",
-    // Épices colorées mélangées ras el hanout
-    image: IMG("1596040033229-a9821ebd058d"),
+    image: IMG(SPICES),
     description: "Mélange marocain authentique de 25 épices. Idéal pour tajines, couscous et marinades.",
     badge: "Bestseller",
     isHalal: true,
@@ -387,8 +383,7 @@ export const products: Product[] = [
     category: "Épicerie Vrac",
     price: 4.50,
     weight: "100g",
-    // Graines de cumin en vrac
-    image: IMG("1506905516-0e0b7c269e37"),
+    image: fp(SPICES, 0.65, 0.35),
     description: "Cumin entier de qualité premium, arôme intense et naturel. Idéal pour merguez et tajines.",
     isHalal: true,
     inStock: true,
@@ -401,8 +396,7 @@ export const products: Product[] = [
     category: "Épicerie Vrac",
     price: 3.90,
     weight: "500g",
-    // Lentilles vertes en vrac
-    image: IMG("1554200876-56c2f25224fa"),
+    image: fp(SPICES, 0.3, 0.65),
     description: "Lentilles vertes AOP du Puy, riches en protéines et fibres. Label Rouge.",
     isHalal: true,
     inStock: true,
@@ -415,8 +409,7 @@ export const products: Product[] = [
     category: "Épicerie Vrac",
     price: 12.90,
     weight: "500ml",
-    // Bouteille d'huile d'olive avec olives
-    image: IMG("1474979266404-7eaacbcd87c5"),
+    image: IMG(OLIVEOIL),
     description: "Huile d'olive tunisienne première pression à froid. Goût fruité, acidité <0,5%.",
     isHalal: true,
     inStock: true,
@@ -429,8 +422,7 @@ export const products: Product[] = [
     category: "Épicerie Vrac",
     price: 5.90,
     weight: "100g",
-    // Tasse de thé vert à la menthe
-    image: IMG("1564890369478-c89ca6d9cde9"),
+    image: fp(OLIVEOIL, 0.3, 0.4),
     description: "Thé vert roulé en billes, base traditionnelle du thé à la menthe. Saveur douce et légèrement boisée.",
     isHalal: true,
     inStock: true,
