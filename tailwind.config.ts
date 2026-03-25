@@ -9,10 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        green:  { DEFAULT: "#1A6B47", dark: "#14533A", light: "#228B5C" },
-        orange: { DEFAULT: "#E8401C", dark: "#C43516", light: "#FF5A36" },
+        // Couleurs du logo réel
+        green:  { DEFAULT: "#2E7D32", dark: "#1B5E20", light: "#388E3C" },
+        orange: { DEFAULT: "#E64A19", dark: "#BF360C", light: "#FF5722" },
+        red:    { DEFAULT: "#C62828", dark: "#8E0000", light: "#EF5350" },
         gold:   { DEFAULT: "#C9922A", dark: "#A87520", light: "#E0A83A" },
-        cream:  { DEFAULT: "#FAF8F3", dark: "#F0EDE4" },
+        cream:  { DEFAULT: "#FAFAF8", dark: "#F0EDE4" },
       },
       fontFamily: {
         playfair: ["var(--font-playfair)", "serif"],

@@ -2,29 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --green:  #2E7D32;
+  --orange: #E64A19;
+  --red:    #C62828;
+  --gold:   #C9922A;
+  --cream:  #FAFAF8;
+  --text:   #1A1A1A;
+}
+
 html { scroll-behavior: smooth; }
 
 body {
-  background-color: #FAF8F3;
+  background-color: var(--cream);
   font-family: var(--font-dm-sans), sans-serif;
   -webkit-font-smoothing: antialiased;
-  color: #1a1a1a;
+  color: var(--text);
 }
 
 @layer components {
-  .btn-orange {
-    @apply inline-flex items-center justify-center gap-2 bg-[#E8401C] hover:bg-[#C43516] text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 hover:shadow-lg;
+  /* Bouton principal (orange) */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-[#E64A19] hover:bg-[#BF360C]
+           text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200
+           hover:shadow-md active:scale-[0.98];
   }
+  /* Bouton vert */
   .btn-green {
-    @apply inline-flex items-center justify-center gap-2 bg-[#1A6B47] hover:bg-[#14533A] text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 hover:shadow-lg;
+    @apply inline-flex items-center justify-center gap-2 bg-[#2E7D32] hover:bg-[#1B5E20]
+           text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200
+           hover:shadow-md active:scale-[0.98];
   }
+  /* Bouton contour blanc */
   .btn-outline-white {
-    @apply inline-flex items-center justify-center gap-2 border-2 border-white text-white hover:bg-white hover:text-[#1A6B47] font-semibold px-6 py-3 rounded-xl transition-all duration-200;
+    @apply inline-flex items-center justify-center gap-2 border-2 border-white
+           text-white hover:bg-white hover:text-[#2E7D32]
+           font-semibold px-6 py-3 rounded-lg transition-all duration-200;
   }
+  /* Bouton contour vert */
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 border border-[#2E7D32]
+           text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white
+           font-semibold px-6 py-3 rounded-lg transition-all duration-200;
+  }
+  /* Input standard */
   .input-field {
-    @apply w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1A6B47]/30 focus:border-[#1A6B47] bg-white text-gray-800 placeholder-gray-400 transition-all;
+    @apply w-full px-4 py-3 border border-gray-200 rounded-lg text-sm
+           focus:outline-none focus:ring-2 focus:ring-[#2E7D32]/20 focus:border-[#2E7D32]
+           bg-white text-gray-800 placeholder-gray-400 transition-all;
   }
+  /* Titre de section */
   .section-title {
-    @apply font-playfair text-3xl md:text-4xl font-bold text-[#1A6B47] mb-2;
+    @apply font-playfair text-3xl md:text-4xl font-bold text-[#1A1A1A] mb-2;
+  }
+  /* Card standard */
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-100 transition-all duration-200
+           hover:shadow-md;
   }
 }

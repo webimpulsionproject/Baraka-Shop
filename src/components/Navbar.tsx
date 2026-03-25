@@ -4,8 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
+import BarakaLogo from "@/components/BarakaLogo";
 
-const navLinks = [
+const NAV_LINKS = [
   { href: "/", label: "Accueil" },
   { href: "/catalogue", label: "Catalogue" },
   { href: "/#magasin", label: "Notre magasin" },
@@ -23,32 +24,34 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center h-16">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-1 flex-shrink-0">
-            <span className="text-xl mr-1" aria-hidden="true">🥩</span>
-            <span className="font-playfair text-xl font-bold text-[#1A6B47]">Baraka</span>
-            <span className="font-playfair text-xl font-bold text-[#C9922A]">Shop</span>
+          <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 mr-10">
+            <BarakaLogo size={36} />
+            <div className="flex items-baseline gap-0.5">
+              <span className="font-playfair text-xl font-bold text-[#2E7D32]">Baraka</span>
+              <span className="font-playfair text-xl font-bold text-[#C9922A]">Shop</span>
+            </div>
           </Link>
 
-          {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
+          {/* Desktop links — centred */}
+          <div className="hidden md:flex items-center gap-8 flex-1 justify-center">
+            {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={`text-sm font-medium transition-colors duration-200 relative group ${
                   isActive(link.href)
-                    ? "text-[#E8401C] font-semibold"
-                    : "text-gray-700 hover:text-[#1A6B47]"
+                    ? "text-[#E64A19] font-semibold"
+                    : "text-gray-600 hover:text-[#2E7D32]"
                 }`}
               >
                 {link.label}
                 <span
-                  className={`absolute -bottom-1 left-0 h-0.5 bg-[#E8401C] transition-all duration-200 ${
+                  className={`absolute -bottom-1 left-0 h-0.5 bg-[#E64A19] rounded-full transition-all duration-200 ${
                     isActive(link.href) ? "w-full" : "w-0 group-hover:w-full"
                   }`}
                 />
@@ -57,47 +60,47 @@ export default function Navbar() {
           </div>
 
           {/* Right side */}
-          <div className="flex items-center gap-3">
-            {/* Connexion — desktop only */}
+          <div className="flex items-center gap-3 ml-auto">
+            {/* Connexion — desktop */}
             <Link
               href="/connexion"
-              className="hidden md:inline-flex items-center gap-1.5 border border-[#1A6B47] text-[#1A6B47] hover:bg-[#1A6B47] hover:text-white text-sm font-semibold px-4 py-2 rounded-lg transition-all duration-200"
+              className="hidden md:inline-flex items-center gap-1.5 border border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white text-sm font-semibold px-4 py-2 rounded-lg transition-all duration-200"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               Connexion
             </Link>
 
-            {/* Cart */}
+            {/* Panier */}
             <Link
               href="/panier"
-              className="relative p-2 text-gray-700 hover:text-[#E8401C] transition-colors duration-200"
-              aria-label={`Panier — ${totalItems} article${totalItems > 1 ? "s" : ""}`}
+              className="relative p-2 text-gray-600 hover:text-[#E64A19] transition-colors duration-200 group"
+              aria-label={`Panier — ${totalItems} article${totalItems !== 1 ? "s" : ""}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#E8401C] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold leading-none">
+                <span className="absolute -top-0.5 -right-0.5 bg-[#E64A19] text-white text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center leading-none">
                   {totalItems > 9 ? "9+" : totalItems}
                 </span>
               )}
             </Link>
 
-            {/* Hamburger */}
+            {/* Hamburger — mobile */}
             <button
-              className="md:hidden p-2 text-gray-700 hover:text-[#1A6B47] transition-colors"
+              className="md:hidden p-2 text-gray-600 hover:text-[#2E7D32] transition-colors rounded-lg hover:bg-gray-50"
               onClick={() => setOpen((v) => !v)}
               aria-label="Menu"
               aria-expanded={open}
             >
               {open ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
@@ -109,15 +112,15 @@ export default function Navbar() {
         {open && (
           <div className="md:hidden border-t border-gray-100 py-3 pb-5">
             <div className="flex flex-col gap-1">
-              {navLinks.map((link) => (
+              {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                  className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     isActive(link.href)
-                      ? "bg-[#E8401C]/10 text-[#E8401C] font-semibold"
-                      : "text-gray-700 hover:bg-gray-50 hover:text-[#1A6B47]"
+                      ? "bg-[#E64A19]/8 text-[#E64A19] font-semibold"
+                      : "text-gray-700 hover:bg-gray-50 hover:text-[#2E7D32]"
                   }`}
                 >
                   {link.label}
@@ -127,14 +130,14 @@ export default function Navbar() {
                 <Link
                   href="/connexion"
                   onClick={() => setOpen(false)}
-                  className="block text-center border border-[#1A6B47] text-[#1A6B47] font-semibold py-2.5 rounded-xl text-sm"
+                  className="block text-center border border-[#2E7D32] text-[#2E7D32] font-semibold py-2.5 rounded-lg text-sm transition-all hover:bg-[#2E7D32] hover:text-white"
                 >
                   Connexion
                 </Link>
                 <Link
                   href="/catalogue"
                   onClick={() => setOpen(false)}
-                  className="block text-center bg-[#E8401C] text-white font-semibold py-2.5 rounded-xl text-sm"
+                  className="block text-center bg-[#E64A19] text-white font-semibold py-2.5 rounded-lg text-sm hover:bg-[#BF360C] transition-colors"
                 >
                   Voir les viandes →
                 </Link>
