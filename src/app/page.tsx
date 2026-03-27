@@ -1,33 +1,106 @@
 import Link from "next/link";
+import Image from "next/image";
 import { products, reviews } from "@/lib/data";
 import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
 import PromoWeekSection from "@/components/PromoWeekSection";
 
+/* ── Icones SVG inline ────────────────────────────────────────── */
+function IconHalal() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  );
+}
+function IconClock() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  );
+}
+function IconKnife() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 3.75l9 9-1.5 1.5-3-3L9 15l-1.5-1.5 3.75-3.75-3-3L6 9l-1.5-1.5 3-3z" />
+    </svg>
+  );
+}
+function IconStore() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
+    </svg>
+  );
+}
+function IconStar() {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+    </svg>
+  );
+}
+function IconArrow() {
+  return (
+    <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+      <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clipRule="evenodd" />
+    </svg>
+  );
+}
+function IconPin() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+    </svg>
+  );
+}
+function IconPhone() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+    </svg>
+  );
+}
+function IconMail() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+    </svg>
+  );
+}
+function IconTag() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
+    </svg>
+  );
+}
+function IconTruck() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-6 h-6">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+    </svg>
+  );
+}
+
+/* ── Banniere Aid ─────────────────────────────────────────────── */
 function AidBanner() {
   return (
-    <section className="bg-[#1B5E20] relative overflow-hidden">
-      <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <pattern id="islamic" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-              <polygon points="30,5 55,20 55,40 30,55 5,40 5,20" fill="none" stroke="white" strokeWidth="1"/>
-              <polygon points="30,15 45,23 45,37 30,45 15,37 15,23" fill="none" stroke="white" strokeWidth="0.5"/>
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#islamic)" />
-        </svg>
-      </div>
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <section className="bg-[#1B5E20]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="text-center sm:text-left">
-            <p className="text-white font-semibold text-sm sm:text-base">
-              🐑 <strong>Spécial Aïd el-Adha</strong> — Réservez votre mouton dès maintenant
-            </p>
-            <p className="text-white/65 text-xs mt-0.5">Découpe sur place incluse • Stocks limités</p>
-          </div>
-          <Link href="/produits?categorie=aid" className="flex-shrink-0 bg-[#C9922A] hover:bg-[#A87520] text-white font-semibold px-5 py-2 rounded-lg text-sm transition-all hover:shadow-md">
-            Réserver →
+          <p className="text-white text-sm text-center sm:text-left">
+            <strong>Special Aid el-Adha</strong>
+            <span className="text-white/70"> — Reservez votre mouton, stocks limites · Decoupe sur place incluse</span>
+          </p>
+          <Link
+            href="/produits?categorie=aid"
+            className="flex-shrink-0 border border-[#C9922A] text-[#C9922A] hover:bg-[#C9922A] hover:text-white text-xs font-semibold px-4 py-1.5 rounded transition-all"
+          >
+            Reserver
           </Link>
         </div>
       </div>
@@ -35,55 +108,71 @@ function AidBanner() {
   );
 }
 
+/* ── Hero ─────────────────────────────────────────────────────── */
 function Hero() {
   return (
-    <section className="relative bg-[#1B5E20] overflow-hidden min-h-[600px] flex items-center">
-      <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-white/5" />
-        <div className="absolute bottom-0 -left-16 w-64 h-64 rounded-full bg-black/5" />
-        <div className="absolute top-0 right-0 w-2/5 h-full bg-[#154818]/30 skew-x-[-10deg] translate-x-20" />
+    <section className="relative bg-[#0F3D15] overflow-hidden">
+      {/* Image de fond */}
+      <div className="absolute inset-0">
+        <Image
+          src="https://images.unsplash.com/photo-1529694157872-4e0c0f3b238b?w=1400&h=800&fit=crop&auto=format&q=80"
+          alt="Boucherie Baraka Shop"
+          fill
+          className="object-cover opacity-25"
+          priority
+          unoptimized
+        />
       </div>
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
-          <div className="lg:col-span-3">
-            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 text-white/90 text-sm font-medium px-4 py-1.5 rounded-full mb-6">
-              ✓ Certifié Halal ACMF
-            </div>
-            <h1 className="font-playfair text-4xl sm:text-5xl lg:text-[3.25rem] font-bold text-white leading-[1.15] mb-5">
-              La Meilleure{" "}
-              <span className="text-[#C9922A]">Viande Halal</span>
-              <br />de Mons-en-Barœul
-            </h1>
-            <p className="text-white/70 text-lg leading-relaxed mb-8 max-w-lg">
-              Boucherie artisanale, traiteur et épicerie vrac.{" "}
-              <strong className="text-white">Viandes fraîches découpées à la demande.</strong>{" "}
-              Click & Collect en 30 minutes.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 mb-14">
-              <Link href="/produits" className="btn-primary text-base px-8 py-3.5">Voir nos produits →</Link>
-              <Link href="#collecte" className="btn-outline-white text-base px-8 py-3.5">Click & Collect</Link>
-            </div>
-            <div className="flex flex-wrap gap-8">
-              {[
-                { val: "4,6 ★", sub: "109 avis" },
-                { val: "100%", sub: "Halal certifié" },
-                { val: "6j/7", sub: "Ouvert" },
-                { val: "+10 ans", sub: "d'expérience" },
-              ].map((s) => (
-                <div key={s.sub}>
-                  <p className="font-playfair text-2xl font-bold text-[#C9922A]">{s.val}</p>
-                  <p className="text-white/50 text-xs mt-0.5">{s.sub}</p>
-                </div>
-              ))}
-            </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
+        <div className="max-w-2xl">
+          {/* Label */}
+          <div className="inline-flex items-center gap-2 border border-[#C9922A]/50 text-[#C9922A] text-xs font-semibold tracking-widest uppercase px-4 py-2 rounded-full mb-8">
+            <IconHalal />
+            Certifie Halal ACMF
           </div>
-          <div className="lg:col-span-2 hidden lg:block">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://images.unsplash.com/photo-1529694157872-4e0c0f3b238b?w=600&h=480&fit=crop&auto=format"
-              alt="Boucherie Halal Baraka Shop"
-              className="w-full h-[420px] object-cover rounded-2xl shadow-2xl"
-            />
+
+          {/* Titre */}
+          <h1 className="font-playfair text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.1] mb-6">
+            La Meilleure<br />
+            <span className="text-[#C9922A]">Viande Halal</span><br />
+            du Nord
+          </h1>
+
+          <p className="text-white/60 text-lg leading-relaxed mb-10 max-w-lg">
+            Boucherie artisanale, traiteur et epicerie vrac a Mons-en-Baroeul.
+            Viandes fraiches decoupees a la demande. Click &amp; Collect en 30 minutes.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link
+              href="/produits"
+              className="inline-flex items-center justify-center gap-2 bg-[#C9922A] hover:bg-[#A87520] text-white font-semibold px-8 py-4 rounded-lg transition-all text-sm tracking-wide"
+            >
+              Voir nos produits
+              <IconArrow />
+            </Link>
+            <Link
+              href="#collecte"
+              className="inline-flex items-center justify-center gap-2 border border-white/30 text-white hover:bg-white/10 font-semibold px-8 py-4 rounded-lg transition-all text-sm tracking-wide"
+            >
+              Click &amp; Collect
+            </Link>
+          </div>
+
+          {/* Stats */}
+          <div className="flex flex-wrap gap-10 mt-14 pt-10 border-t border-white/10">
+            {[
+              { val: "4.6", sub: "Note moyenne · 109 avis" },
+              { val: "100%", sub: "Halal certifie" },
+              { val: "6j/7", sub: "Ouvert" },
+              { val: "+10 ans", sub: "d'experience" },
+            ].map((s) => (
+              <div key={s.sub}>
+                <p className="font-playfair text-3xl font-bold text-[#C9922A]">{s.val}</p>
+                <p className="text-white/40 text-xs mt-1">{s.sub}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -91,22 +180,25 @@ function Hero() {
   );
 }
 
+/* ── Trust Bar ────────────────────────────────────────────────── */
 function TrustBar() {
   const items = [
-    { icon: "☪",  title: "100% Halal Certifié",      sub: "ACMF contrôlé" },
-    { icon: "🕐", title: "Click & Collect 30 min",    sub: "Commandez en ligne" },
-    { icon: "🔪", title: "Découpe sur demande",        sub: "Service inclus" },
-    { icon: "🏪", title: "Ouvert 6j/7",               sub: "Sauf lundi" },
+    { icon: <IconHalal />, title: "100% Halal Certifie",   sub: "Controle ACMF" },
+    { icon: <IconClock />, title: "Click & Collect 30 min", sub: "Commandez en ligne" },
+    { icon: <IconKnife />, title: "Decoupe sur demande",    sub: "Service inclus" },
+    { icon: <IconStore />, title: "Ouvert 6j/7",            sub: "Sauf lundi" },
   ];
   return (
     <section className="bg-white border-b border-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-          {items.map((item) => (
-            <div key={item.title} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors">
-              <span className="text-2xl flex-shrink-0">{item.icon}</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-gray-100">
+          {items.map((item, i) => (
+            <div key={item.title} className={`flex items-center gap-4 px-6 ${i === 0 ? "pl-0" : ""}`}>
+              <div className="w-10 h-10 rounded-full bg-[#1B5E20]/8 flex items-center justify-center text-[#1B5E20] flex-shrink-0">
+                {item.icon}
+              </div>
               <div>
-                <p className="font-semibold text-gray-900 text-sm leading-tight">{item.title}</p>
+                <p className="font-semibold text-gray-900 text-sm">{item.title}</p>
                 <p className="text-xs text-gray-400 mt-0.5">{item.sub}</p>
               </div>
             </div>
@@ -117,35 +209,86 @@ function TrustBar() {
   );
 }
 
+/* ── Categories ───────────────────────────────────────────────── */
 function Categories() {
   const cats = [
-    { icon: "🥩", name: "Bœuf & Veau",       sub: "Charolais, Merguez, Rosbif",    color: "#1B5E20" },
-    { icon: "🐑", name: "Agneau",             sub: "Gigot, Côtelettes, Souris",      color: "#E64A19" },
-    { icon: "🍗", name: "Volaille",           sub: "Poulet fermier, Dinde",           color: "#C62828" },
-    { icon: "🍲", name: "Traiteur",           sub: "Couscous, Tajines, BBQ",          color: "#C9922A" },
-    { icon: "🌿", name: "Épicerie Vrac",      sub: "Épices, Légumineuses, Huiles",    color: "#2E7D32" },
+    {
+      name: "Boeuf & Veau",
+      sub: "Charolais, Merguez, Rosbif",
+      bg: "bg-[#1B5E20]",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.2} className="w-8 h-8">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c-1.2 5.4-6 7.8-6 12a6 6 0 0012 0c0-4.2-4.8-6.6-6-12z" />
+        </svg>
+      ),
+    },
+    {
+      name: "Agneau",
+      sub: "Gigot, Cotelettes, Souris",
+      bg: "bg-[#E64A19]",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.2} className="w-8 h-8">
+          <circle cx="12" cy="10" r="4" />
+          <path strokeLinecap="round" d="M8 14c-3 1-4 4-4 7h16c0-3-1-6-4-7" />
+        </svg>
+      ),
+    },
+    {
+      name: "Volaille",
+      sub: "Poulet fermier, Dinde",
+      bg: "bg-[#C62828]",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.2} className="w-8 h-8">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 2C9 2 7 4 7 6c0 1 .4 2 1 2.5L4 14h4l1-2 3 5 3-5 1 2h4l-4-5.5c.6-.5 1-1.5 1-2.5 0-2-2-4-5-4z" />
+        </svg>
+      ),
+    },
+    {
+      name: "Traiteur",
+      sub: "Couscous, Tajines, BBQ",
+      bg: "bg-[#C9922A]",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.2} className="w-8 h-8">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6h7.5v2.25h-7.5V6zM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.616 4.5 4.698V18a2.25 2.25 0 002.25 2.25h10.5A2.25 2.25 0 0019.5 18V4.698c0-1.082-.807-1.998-1.907-2.126A48.355 48.355 0 0012 2.25z" />
+        </svg>
+      ),
+    },
+    {
+      name: "Epicerie Vrac",
+      sub: "Epices, Legumineuses, Huiles",
+      bg: "bg-[#2E7D32]",
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.2} className="w-8 h-8">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15M14.25 3.104c.251.023.501.05.75.082M19.8 15a2.25 2.25 0 01-2.25 2.25H6.45A2.25 2.25 0 014.2 15m15.6 0v-1.171a.75.75 0 00-.659-.74l-3.891-.486a.75.75 0 01-.659-.74V9.75" />
+        </svg>
+      ),
+    },
   ];
+
   return (
-    <section className="py-16 bg-[#FAFAF8]">
+    <section className="py-20 bg-[#FAFAF8]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
-          <h2 className="section-title">Nos Rayons</h2>
-          <p className="text-gray-500 mt-2 text-sm">Boucherie · Traiteur · Épicerie vrac — tout en un</p>
+        <div className="mb-12">
+          <p className="text-xs font-semibold tracking-widest uppercase text-[#C9922A] mb-3">Nos rayons</p>
+          <h2 className="font-playfair text-4xl font-bold text-gray-900">
+            Boucherie · Traiteur · Epicerie
+          </h2>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
           {cats.map((c) => (
             <Link
               key={c.name}
               href="/produits"
-              style={{ backgroundColor: c.color }}
-              className="text-white rounded-xl p-5 flex flex-col items-center text-center gap-3 transition-all duration-200 hover:opacity-90 hover:scale-[1.02] hover:shadow-lg group"
+              className={`${c.bg} text-white rounded-2xl p-6 flex flex-col gap-4 hover:opacity-90 hover:-translate-y-0.5 transition-all duration-200 group`}
             >
-              <span className="text-4xl">{c.icon}</span>
+              <div className="opacity-80">{c.icon}</div>
               <div>
                 <h3 className="font-playfair font-bold text-sm leading-tight">{c.name}</h3>
-                <p className="text-white/70 text-xs mt-1 leading-snug">{c.sub}</p>
+                <p className="text-white/60 text-xs mt-1 leading-snug">{c.sub}</p>
               </div>
-              <span className="opacity-50 group-hover:opacity-100 text-sm">→</span>
+              <div className="mt-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                <IconArrow />
+              </div>
             </Link>
           ))}
         </div>
@@ -154,46 +297,102 @@ function Categories() {
   );
 }
 
+/* ── Decoupe ──────────────────────────────────────────────────── */
 function CoupeSection() {
   const options = [
-    { icon: "🔪", title: "Découpe Standard",       desc: "Incluse gratuitement avec votre achat.",     tag: "Gratuit",   tagColor: "bg-[#1B5E20] text-white" },
-    { icon: "⚙️", title: "Découpe Personnalisée", desc: "Morceaux sur mesure selon vos préférences.",  tag: "+2€/kg",    tagColor: "bg-[#C9922A] text-white" },
-    { icon: "🐑", title: "Service Aïd",            desc: "Mouton entier, mise sous vide disponible.",  tag: "Sur réservation", tagColor: "bg-[#C62828] text-white" },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-7 h-7">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 3.75l9 9-1.5 1.5-3-3L9 15l-1.5-1.5 3.75-3.75-3-3L6 9l-1.5-1.5 3-3z" />
+        </svg>
+      ),
+      title: "Decoupe Standard",
+      desc: "Incluse gratuitement avec votre achat.",
+      tag: "Gratuit",
+      tagClass: "bg-[#1B5E20] text-white",
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-7 h-7">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+        </svg>
+      ),
+      title: "Decoupe Personnalisee",
+      desc: "Morceaux sur mesure selon vos preferences.",
+      tag: "+2€/kg",
+      tagClass: "bg-[#C9922A] text-white",
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-7 h-7">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+        </svg>
+      ),
+      title: "Service Aid",
+      desc: "Mouton entier, mise sous vide disponible.",
+      tag: "Sur reservation",
+      tagClass: "bg-[#C62828] text-white",
+    },
   ];
+
   return (
-    <section className="py-16 bg-white">
+    <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
-          <h2 className="section-title">La découpe, c&apos;est notre métier</h2>
-          <p className="text-gray-500 mt-2 text-sm">Un service artisanal au service de vos besoins</p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-3xl mx-auto">
-          {options.map((o) => (
-            <div key={o.title} className="card p-6 text-center">
-              <div className="text-4xl mb-4">{o.icon}</div>
-              <span className={`inline-block text-xs font-semibold px-3 py-1 rounded-full mb-3 ${o.tagColor}`}>{o.tag}</span>
-              <h3 className="font-playfair font-bold text-gray-900 text-base mb-2">{o.title}</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">{o.desc}</p>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <p className="text-xs font-semibold tracking-widest uppercase text-[#C9922A] mb-3">Artisanat</p>
+            <h2 className="font-playfair text-4xl font-bold text-gray-900 mb-5">
+              La decoupe,<br />c&apos;est notre metier
+            </h2>
+            <p className="text-gray-500 leading-relaxed mb-8">
+              Chaque morceau est prepare par nos bouchers artisans selon vos exigences.
+              Nous travaillons uniquement des viandes halal certifiees, fraiches du jour.
+            </p>
+            <Link href="/produits" className="inline-flex items-center gap-2 text-[#1B5E20] font-semibold text-sm hover:gap-3 transition-all">
+              Voir nos produits
+              <IconArrow />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-4">
+            {options.map((o) => (
+              <div key={o.title} className="flex items-start gap-5 p-5 rounded-xl border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all">
+                <div className="w-12 h-12 rounded-xl bg-[#FAFAF8] flex items-center justify-center text-[#1B5E20] flex-shrink-0">
+                  {o.icon}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-1">
+                    <h3 className="font-semibold text-gray-900 text-sm">{o.title}</h3>
+                    <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${o.tagClass}`}>{o.tag}</span>
+                  </div>
+                  <p className="text-gray-400 text-sm leading-relaxed">{o.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
+/* ── Featured Products ────────────────────────────────────────── */
 function FeaturedProducts() {
   const featured = products.filter((p) => p.badge === "Bestseller").slice(0, 6);
   return (
-    <section className="py-16 bg-[#FAFAF8]">
+    <section className="py-20 bg-[#FAFAF8]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
           <div>
-            <h2 className="section-title">Nos Incontournables</h2>
-            <p className="text-gray-500 mt-1 text-sm">Fraîcheur du jour, qualité garantie.</p>
+            <p className="text-xs font-semibold tracking-widest uppercase text-[#C9922A] mb-3">Selection</p>
+            <h2 className="font-playfair text-4xl font-bold text-gray-900">Nos Incontournables</h2>
+            <p className="text-gray-400 mt-2 text-sm">Fraicheur du jour, qualite garantie</p>
           </div>
-          <Link href="/produits" className="text-[#E64A19] font-semibold hover:text-[#BF360C] transition-colors whitespace-nowrap text-sm group">
-            Voir nos produits <span className="group-hover:translate-x-0.5 inline-block transition-transform">→</span>
+          <Link
+            href="/produits"
+            className="inline-flex items-center gap-2 text-[#1B5E20] font-semibold text-sm hover:gap-3 transition-all whitespace-nowrap"
+          >
+            Tous les produits
+            <IconArrow />
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -204,47 +403,72 @@ function FeaturedProducts() {
   );
 }
 
+/* ── Livraison ────────────────────────────────────────────────── */
 function DeliverySection() {
   return (
-    <section id="collecte" className="py-16 bg-white">
+    <section id="collecte" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="section-title">Commandez Facilement</h2>
-          <p className="text-gray-500 mt-2 text-sm">Deux options pour recevoir vos produits halal</p>
+        <div className="mb-12">
+          <p className="text-xs font-semibold tracking-widest uppercase text-[#C9922A] mb-3">Livraison</p>
+          <h2 className="font-playfair text-4xl font-bold text-gray-900">Commandez Facilement</h2>
+          <p className="text-gray-400 mt-2 text-sm">Deux options pour recevoir vos produits</p>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {/* Click & Collect — DISPONIBLE */}
-          <div className="bg-[#1B5E20] text-white rounded-2xl p-8">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-4xl">🏪</span>
-              <span className="bg-white/20 text-white text-xs font-bold px-2 py-1 rounded-full">✓ Disponible</span>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 max-w-4xl">
+          {/* Click & Collect */}
+          <div className="bg-[#1B5E20] rounded-2xl p-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white">
+                <IconStore />
+              </div>
+              <span className="bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full">Disponible</span>
             </div>
-            <h3 className="font-playfair text-2xl font-bold mb-1">Click & Collect</h3>
-            <p className="text-white/65 text-sm mb-6">Prêt en 30 minutes · Gratuit</p>
+            <h3 className="font-playfair text-2xl font-bold text-white mb-1">Click &amp; Collect</h3>
+            <p className="text-white/50 text-sm mb-8">Pret en 30 minutes · Gratuit</p>
             <ol className="space-y-3 mb-8">
-              {["Choisissez vos produits en ligne","Sélectionnez votre créneau","Récupérez au 17 rue Corneille"].map((step, i) => (
-                <li key={i} className="flex items-start gap-3 text-sm text-white/80">
-                  <span className="w-5 h-5 rounded-full bg-[#C9922A] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i+1}</span>
+              {[
+                "Choisissez vos produits en ligne",
+                "Selectionnez votre creneau",
+                "Recuperez au 17 rue Corneille",
+              ].map((step, i) => (
+                <li key={i} className="flex items-start gap-3 text-sm text-white/75">
+                  <span className="w-5 h-5 rounded-full bg-[#C9922A] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                    {i + 1}
+                  </span>
                   {step}
                 </li>
               ))}
             </ol>
-            <Link href="/produits" className="inline-flex items-center gap-2 bg-[#C9922A] hover:bg-[#A87520] text-white font-semibold px-6 py-3 rounded-lg transition-all text-sm hover:shadow-md">
-              Commander →
+            <Link
+              href="/produits"
+              className="inline-flex items-center gap-2 bg-[#C9922A] hover:bg-[#A87520] text-white font-semibold px-6 py-3 rounded-lg transition-all text-sm"
+            >
+              Commander
+              <IconArrow />
             </Link>
           </div>
-          {/* Livraison — BIENTOT */}
-          <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-8 opacity-70">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-4xl grayscale">🚚</span>
-              <span className="bg-gray-200 text-gray-500 text-xs font-bold px-2 py-1 rounded-full">Bientôt disponible</span>
+
+          {/* Livraison */}
+          <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center text-gray-400">
+                <IconTruck />
+              </div>
+              <span className="bg-gray-200 text-gray-500 text-xs font-bold px-3 py-1 rounded-full">Bientot</span>
             </div>
-            <h3 className="font-playfair text-2xl font-bold text-gray-500 mb-1">Livraison à domicile</h3>
-            <p className="text-gray-400 text-sm mb-6">Zone locale · Bientôt disponible</p>
-            <p className="text-gray-400 text-sm mb-6">Nous travaillons à la mise en place de la livraison à domicile. Laissez votre email pour être alerté en priorité.</p>
+            <h3 className="font-playfair text-2xl font-bold text-gray-400 mb-1">Livraison a domicile</h3>
+            <p className="text-gray-400 text-sm mb-8">Zone locale · En cours de preparation</p>
+            <p className="text-gray-400 text-sm leading-relaxed mb-6">
+              Laissez votre email pour etre parmi les premiers a en beneficier.
+            </p>
             <div className="flex gap-2">
-              <input type="email" placeholder="votre@email.fr" className="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none" />
-              <button className="bg-gray-300 text-gray-600 font-semibold px-4 py-2.5 rounded-lg text-sm">M&apos;alerter</button>
+              <input
+                type="email"
+                placeholder="votre@email.fr"
+                className="flex-1 px-4 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none bg-white"
+              />
+              <button className="bg-gray-200 text-gray-500 font-semibold px-4 py-3 rounded-lg text-sm hover:bg-gray-300 transition-colors">
+                M&apos;alerter
+              </button>
             </div>
           </div>
         </div>
@@ -253,29 +477,56 @@ function DeliverySection() {
   );
 }
 
+/* ── Packs Aid ────────────────────────────────────────────────── */
 function AidPacks() {
   const packs = [
-    { icon:"🐑", name:"Pack Famille",  desc:"Mouton entier + découpe complète",   price:"dès 280€", badge:"Aïd el-Adha" },
-    { icon:"🐑", name:"Pack Duo",      desc:"Demi-mouton + découpe sur place",    price:"dès 150€", badge:"Populaire" },
-    { icon:"🔪", name:"Pack Découpe",  desc:"Service découpe uniquement",         price:"dès 45€",  badge:"Service" },
+    {
+      name: "Pack Famille",
+      desc: "Mouton entier + decoupe complete",
+      price: "des 280€",
+      badge: "Aid el-Adha",
+    },
+    {
+      name: "Pack Duo",
+      desc: "Demi-mouton + decoupe sur place",
+      price: "des 150€",
+      badge: "Populaire",
+    },
+    {
+      name: "Pack Decoupe",
+      desc: "Service decoupe uniquement",
+      price: "des 45€",
+      badge: "Service",
+    },
   ];
+
   return (
-    <section className="py-16 bg-[#1B5E20]">
+    <section className="py-20 bg-[#0F3D15]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 text-white/90 text-sm px-4 py-1.5 rounded-full mb-4">🐑 Spécial Aïd el-Adha</div>
-          <h2 className="font-playfair text-3xl md:text-4xl font-bold text-white mb-2">Nos Packs Aïd</h2>
-          <p className="text-white/60 text-sm">Réservez dès maintenant — Stocks limités</p>
+        <div className="mb-12">
+          <p className="text-xs font-semibold tracking-widest uppercase text-[#C9922A] mb-3">Reservation</p>
+          <h2 className="font-playfair text-4xl font-bold text-white mb-2">Nos Packs Aid</h2>
+          <p className="text-white/40 text-sm">Stocks limites — Reservez des maintenant</p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-3xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 max-w-3xl">
           {packs.map((p) => (
-            <div key={p.name} className="bg-white/10 backdrop-blur-sm border border-white/15 rounded-2xl p-6 text-white text-center">
-              <div className="text-5xl mb-4">{p.icon}</div>
-              <span className="inline-block bg-[#C9922A] text-white text-xs font-semibold px-3 py-1 rounded-full mb-3">{p.badge}</span>
-              <h3 className="font-playfair font-bold text-xl mb-2">{p.name}</h3>
-              <p className="text-white/70 text-sm mb-4">{p.desc}</p>
-              <p className="font-playfair text-2xl font-bold text-[#C9922A] mb-5">{p.price}</p>
-              <Link href="/commande" className="btn-promo w-full justify-center text-sm py-2.5">Réserver →</Link>
+            <div
+              key={p.name}
+              className="border border-white/10 rounded-2xl p-7 hover:border-[#C9922A]/50 hover:bg-white/5 transition-all"
+            >
+              <span className="inline-block border border-[#C9922A]/50 text-[#C9922A] text-xs font-semibold px-3 py-1 rounded-full mb-5">
+                {p.badge}
+              </span>
+              <h3 className="font-playfair font-bold text-xl text-white mb-2">{p.name}</h3>
+              <p className="text-white/50 text-sm mb-5 leading-relaxed">{p.desc}</p>
+              <p className="font-playfair text-3xl font-bold text-[#C9922A] mb-6">{p.price}</p>
+              <Link
+                href="/commande"
+                className="inline-flex items-center gap-2 border border-white/20 text-white hover:border-[#C9922A] hover:text-[#C9922A] font-semibold px-5 py-2.5 rounded-lg text-sm transition-all"
+              >
+                Reserver
+                <IconArrow />
+              </Link>
             </div>
           ))}
         </div>
@@ -284,74 +535,153 @@ function AidPacks() {
   );
 }
 
+/* ── Avis ─────────────────────────────────────────────────────── */
 function ReviewsSection() {
-  const avgRating = (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1);
+  const avg = (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1);
   return (
-    <section className="py-16 bg-[#1A1A1A]">
+    <section className="py-20 bg-[#1A1A1A]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <p className="font-playfair text-5xl font-bold text-[#C9922A]">{avgRating}</p>
-            <div>
-              <div className="flex gap-0.5 text-[#C9922A]">{"★".repeat(5)}</div>
-              <p className="text-white/50 text-xs mt-0.5">{reviews.length} avis vérifiés</p>
-            </div>
-          </div>
-          <h2 className="font-playfair text-3xl font-bold text-white mb-1">Ce que disent nos clients</h2>
-          <p className="text-white/50 text-sm">La meilleure boucherie halal de Mons-en-Barœul</p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
-          {reviews.map((r) => (
-            <div key={r.id} className="bg-white/5 border border-white/10 rounded-xl p-5">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex gap-0.5 text-[#C9922A] text-sm">{"★".repeat(r.rating)}</div>
-                <span className="text-white/30 text-xs">{r.date}</span>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
+          <div>
+            <div className="flex items-center gap-3 mb-3">
+              <span className="font-playfair text-5xl font-bold text-[#C9922A]">{avg}</span>
+              <div>
+                <div className="flex gap-0.5 text-[#C9922A]">
+                  {[...Array(5)].map((_, i) => <IconStar key={i} />)}
+                </div>
+                <p className="text-white/30 text-xs mt-1">{reviews.length} avis verifies</p>
               </div>
-              <p className="text-white/80 text-sm leading-relaxed mb-3">&ldquo;{r.comment}&rdquo;</p>
-              <div className="flex items-center justify-between">
+            </div>
+            <h2 className="font-playfair text-4xl font-bold text-white">Ce que disent nos clients</h2>
+          </div>
+          <button className="self-start border border-white/15 text-white/60 hover:text-white hover:border-white/30 font-semibold px-6 py-3 rounded-lg text-sm transition-all whitespace-nowrap">
+            Laisser un avis
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {reviews.map((r) => (
+            <div key={r.id} className="bg-white/5 border border-white/8 rounded-xl p-6 hover:border-white/15 transition-all">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex gap-0.5 text-[#C9922A]">
+                  {[...Array(r.rating)].map((_, i) => <IconStar key={i} />)}
+                </div>
+                <span className="text-white/25 text-xs">{r.date}</span>
+              </div>
+              <p className="text-white/65 text-sm leading-relaxed mb-4">&ldquo;{r.comment}&rdquo;</p>
+              <div className="flex items-center justify-between pt-4 border-t border-white/8">
                 <p className="text-white font-semibold text-sm">{r.name}</p>
-                {r.product && <span className="text-white/40 text-xs">{r.product}</span>}
+                {r.product && <span className="text-white/30 text-xs">{r.product}</span>}
               </div>
             </div>
           ))}
-        </div>
-        <div className="text-center">
-          <button className="btn-outline-white text-sm px-8 py-3">Laisser un avis →</button>
         </div>
       </div>
     </section>
   );
 }
 
+/* ── Magasin ──────────────────────────────────────────────────── */
 function MagasinSection() {
   return (
-    <section id="magasin" className="py-16 bg-white">
+    <section id="magasin" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="section-title">Nous trouver</h2>
-          <p className="text-gray-500 mt-2 text-sm">17 rue Corneille, 59370 Mons-en-Barœul</p>
+        <div className="mb-12">
+          <p className="text-xs font-semibold tracking-widest uppercase text-[#C9922A] mb-3">Localisation</p>
+          <h2 className="font-playfair text-4xl font-bold text-gray-900">Nous trouver</h2>
+          <p className="text-gray-400 mt-2 text-sm">17 rue Corneille, 59370 Mons-en-Baroeul</p>
         </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-          <div className="space-y-5">
-            <div className="card p-6 space-y-5">
-              {[
-                { icon:"📍", title:"Adresse", content:<p className="text-gray-600 text-sm">17 rue Corneille<br />59370 Mons-en-Barœul, Nord</p> },
-                { icon:"🕐", title:"Horaires", content:<table className="text-sm w-full"><tbody className="divide-y divide-gray-50">{[{day:"Lundi",h:"Fermé",c:true},{day:"Mar – Sam",h:"8h30 – 20h00"},{day:"Dimanche",h:"9h30 – 20h00"}].map(r=><tr key={r.day}><td className="py-1.5 text-gray-500 pr-4 text-xs">{r.day}</td><td className={`py-1.5 font-semibold text-xs ${r.c?"text-[#C62828]":"text-[#1B5E20]"}`}>{r.h}</td></tr>)}</tbody></table> },
-                { icon:"📞", title:"Contact", content:<div className="space-y-0.5"><a href="tel:0952291306" className="block text-sm text-[#1B5E20] hover:underline">09 52 29 13 06</a><a href="mailto:contact.barakashop@gmail.com" className="block text-sm text-[#1B5E20] hover:underline">contact.barakashop@gmail.com</a></div> },
-              ].map(item=>(
-                <div key={item.title} className="flex items-start gap-4">
-                  <div className="w-9 h-9 bg-[#1B5E20]/8 rounded-lg flex items-center justify-center flex-shrink-0"><span>{item.icon}</span></div>
-                  <div><p className="font-semibold text-gray-900 text-sm mb-1">{item.title}</p>{item.content}</div>
-                </div>
-              ))}
+          <div className="space-y-4">
+            {/* Adresse */}
+            <div className="flex items-start gap-4 p-5 rounded-xl border border-gray-100">
+              <div className="w-10 h-10 bg-[#1B5E20]/8 rounded-lg flex items-center justify-center text-[#1B5E20] flex-shrink-0">
+                <IconPin />
+              </div>
+              <div>
+                <p className="font-semibold text-gray-900 text-sm mb-1">Adresse</p>
+                <p className="text-gray-500 text-sm leading-relaxed">17 rue Corneille<br />59370 Mons-en-Baroeul, Nord</p>
+              </div>
             </div>
+
+            {/* Horaires */}
+            <div className="p-5 rounded-xl border border-gray-100">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-10 h-10 bg-[#1B5E20]/8 rounded-lg flex items-center justify-center text-[#1B5E20] flex-shrink-0">
+                  <IconClock />
+                </div>
+                <p className="font-semibold text-gray-900 text-sm">Horaires</p>
+              </div>
+              <table className="text-sm w-full">
+                <tbody className="divide-y divide-gray-50">
+                  {[
+                    { day: "Lundi", h: "Ferme", closed: true },
+                    { day: "Mardi – Samedi", h: "8h30 – 20h00" },
+                    { day: "Dimanche", h: "9h30 – 20h00" },
+                  ].map((r) => (
+                    <tr key={r.day}>
+                      <td className="py-2 text-gray-400 text-xs pr-4">{r.day}</td>
+                      <td className={`py-2 font-semibold text-xs ${r.closed ? "text-[#C62828]" : "text-[#1B5E20]"}`}>{r.h}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Contact */}
+            <div className="flex items-start gap-4 p-5 rounded-xl border border-gray-100">
+              <div className="w-10 h-10 bg-[#1B5E20]/8 rounded-lg flex items-center justify-center text-[#1B5E20] flex-shrink-0">
+                <IconPhone />
+              </div>
+              <div className="space-y-1">
+                <p className="font-semibold text-gray-900 text-sm mb-2">Contact</p>
+                <a href="tel:0952291306" className="flex items-center gap-2 text-sm text-[#1B5E20] hover:underline">
+                  09 52 29 13 06
+                </a>
+                <a href="mailto:contact.barakashop@gmail.com" className="flex items-center gap-2 text-sm text-[#1B5E20] hover:underline">
+                  contact.barakashop@gmail.com
+                </a>
+              </div>
+            </div>
+
+            {/* CTA */}
             <div className="flex gap-3">
-              <a href="https://maps.google.com/?q=17+rue+Corneille+59370+Mons-en-Baroeul" target="_blank" rel="noopener noreferrer" className="btn-green text-sm flex-1 justify-center py-3">📍 Itinéraire</a>
-              <a href="https://www.facebook.com/Barakashop17/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#1565D8] text-white font-semibold px-5 py-3 rounded-lg text-sm transition-all flex-1">📘 Facebook</a>
+              <a
+                href="https://maps.google.com/?q=17+rue+Corneille+59370+Mons-en-Baroeul"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 inline-flex items-center justify-center gap-2 bg-[#1B5E20] hover:bg-[#154818] text-white font-semibold px-5 py-3 rounded-lg text-sm transition-all"
+              >
+                <IconPin />
+                Itineraire
+              </a>
+              <a
+                href="https://www.facebook.com/Barakashop17/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 inline-flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#1565D8] text-white font-semibold px-5 py-3 rounded-lg text-sm transition-all"
+              >
+                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                </svg>
+                Facebook
+              </a>
             </div>
           </div>
-          <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-100 h-[420px]">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2530.5!2d3.1!3d50.6!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s17+rue+Corneille+Mons-en-Bar%C5%93ul!5e0!3m2!1sfr!2sfr!4v1" width="100%" height="420" style={{border:0}} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title="Baraka Shop" />
+
+          {/* Carte */}
+          <div className="rounded-2xl overflow-hidden border border-gray-100 h-[460px]">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2530.5!2d3.1!3d50.6!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s17+rue+Corneille+Mons-en-Bar%C5%93ul!5e0!3m2!1sfr!2sfr!4v1"
+              width="100%"
+              height="460"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Baraka Shop — 17 rue Corneille"
+            />
           </div>
         </div>
       </div>
@@ -359,6 +689,7 @@ function MagasinSection() {
   );
 }
 
+/* ── Page ─────────────────────────────────────────────────────── */
 export default function HomePage() {
   return (
     <>
