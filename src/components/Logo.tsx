@@ -5,18 +5,14 @@ interface LogoProps {
   className?: string;
 }
 
-/**
- * Logo Baraka Shop — losange tricolore (épicerie / traiteur / boucherie)
- * Utilise le fichier SVG dans /public pour bénéficier du cache navigateur.
- */
-export default function Logo({ size = 40, className = "" }: LogoProps) {
+export default function Logo({ size = 48, className = "" }: LogoProps) {
   return (
     <Image
-      src="/logo.svg"
+      src="/logo.jpg"
       alt="Baraka Shop"
       width={size}
       height={size}
-      className={className}
+      className={`object-contain ${className}`}
       priority
     />
   );
