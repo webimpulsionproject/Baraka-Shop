@@ -5,6 +5,17 @@ import { usePathname } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
 import Logo from "@/components/Logo";
 
+function useUser() {
+  const [name, setName] = useState<string | null>(null);
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("baraka-user");
+      if (stored) setName(JSON.parse(stored).name ?? null);
+    } catch { /* ignore */ }
+  }, []);
+  return name;
+}
+
 const NAV_LINKS = [
   { href: "/",         label: "Accueil" },
   { href: "/produits", label: "Nos Produits" },
@@ -19,6 +30,7 @@ export default function Navbar() {
   const pathname                  = usePathname();
   const { totalItems }            = useCart();
   const prevTotal                 = useRef(totalItems);
+  const userName                  = useUser();
 
   /* Scroll shadow */
   useEffect(() => {
@@ -87,15 +99,27 @@ export default function Navbar() {
 
           {/* Droite */}
           <div className="flex items-center gap-2 ml-auto">
-            <Link
-              href="/connexion"
-              className="hidden md:inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-gray-500 hover:text-[#1B5E20] px-4 py-2 rounded-lg transition-colors duration-200"
-            >
-              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-              Connexion
-            </Link>
+            {userName ? (
+              <Link
+                href="/compte"
+                className="hidden md:inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-[#1B5E20] hover:text-[#154818] px-4 py-2 rounded-lg transition-colors duration-200"
+              >
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                {userName}
+              </Link>
+            ) : (
+              <Link
+                href="/connexion"
+                className="hidden md:inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider uppercase text-gray-500 hover:text-[#1B5E20] px-4 py-2 rounded-lg transition-colors duration-200"
+              >
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Connexion
+              </Link>
+            )}
 
             <Link
               href="/produits"
@@ -106,7 +130,7 @@ export default function Navbar() {
 
             {/* Panier */}
             <Link
-              href="/commande"
+              href="/panier"
               className="relative p-2.5 text-gray-500 hover:text-[#1B5E20] transition-colors"
               aria-label={`Panier — ${totalItems} article${totalItems !== 1 ? "s" : ""}`}
             >

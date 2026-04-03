@@ -3,45 +3,58 @@ import type { NextRequest } from "next/server";
 
 /**
  * Middleware de sécurité :
- * - Protège /admin et /api/commandes (GET) par token admin
+ * - Protège /admin et /api/commandes (GET) par ADMIN_SECRET
+ * - Protège /admin-it et /api/admin-it par IT_ADMIN_SECRET
  * - Ajoute les headers de sécurité sur toutes les réponses
  */
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // En-têtes de sécurité sur toutes les réponses
+  // ── Security headers (toutes les réponses) ─────────────────────────────────
   const response = NextResponse.next();
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("X-Frame-Options", "DENY");
   response.headers.set("X-XSS-Protection", "1; mode=block");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  response.headers.set(
-    "Permissions-Policy",
-    "camera=(), microphone=(), geolocation=()"
-  );
+  response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
 
-  // Protection de la route admin (page et API)
-  const isAdminPage = pathname.startsWith("/admin");
-  const isAdminAPI = pathname === "/api/commandes" && request.method === "GET";
+  // ── Helper: vérifier un token ──────────────────────────────────────────────
+  function isAuthorized(secret: string | undefined, cookieKey: string): boolean {
+    if (!secret) return true; // Dev sans secret → laisse passer avec warning
+    const sessionToken = request.cookies.get(cookieKey)?.value;
+    const authHeader   = request.headers.get("Authorization");
+    const bearerToken  = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
+    return sessionToken === secret || bearerToken === secret;
+  }
+
+  // ── Route Boucher Admin (/admin) ───────────────────────────────────────────
+  const isAdminPage = pathname.startsWith("/admin") && !pathname.startsWith("/admin-it");
+  const isAdminAPI  = pathname === "/api/commandes" && request.method === "GET";
 
   if (isAdminPage || isAdminAPI) {
     const adminSecret = process.env.ADMIN_SECRET;
-
-    // En dev sans secret configuré, on laisse passer avec un warning
     if (!adminSecret) {
-      console.warn("[SECURITY] ADMIN_SECRET non configuré — route admin non protégée !");
+      console.warn("[SECURITY] ADMIN_SECRET non configuré — /admin non protégé !");
       return response;
     }
+    if (!isAuthorized(adminSecret, "admin_session")) {
+      if (isAdminPage) return NextResponse.redirect(new URL("/connexion?redirect=admin", request.url));
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
+  }
 
-    // Vérification par cookie de session ou header Authorization
-    const sessionToken = request.cookies.get("admin_session")?.value;
-    const authHeader = request.headers.get("Authorization");
-    const bearerToken = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
+  // ── Route IT Admin (/admin-it) ─────────────────────────────────────────────
+  const isITAdminPage = pathname.startsWith("/admin-it");
+  const isITAdminAPI  = pathname.startsWith("/api/admin-it");
 
-    if (sessionToken !== adminSecret && bearerToken !== adminSecret) {
-      if (isAdminPage) {
-        return NextResponse.redirect(new URL("/connexion?redirect=admin", request.url));
-      }
+  if (isITAdminPage || isITAdminAPI) {
+    const itSecret = process.env.IT_ADMIN_SECRET;
+    if (!itSecret) {
+      console.warn("[SECURITY] IT_ADMIN_SECRET non configuré — /admin-it non protégé !");
+      return response;
+    }
+    if (!isAuthorized(itSecret, "it_admin_session")) {
+      if (isITAdminPage) return NextResponse.redirect(new URL("/connexion?redirect=it", request.url));
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
     }
   }
@@ -52,7 +65,9 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/admin/:path*",
+    "/admin-it/:path*",
     "/api/commandes",
+    "/api/admin-it/:path*",
     "/((?!_next/static|_next/image|favicon.ico|logo.svg).*)",
   ],
 };

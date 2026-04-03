@@ -48,11 +48,11 @@ const EMPTY_PRODUCT = {
 const EMPTY_PROMO = { code: "", type: "percent" as "percent" | "fixed", value: "", maxUses: "", expiry: "" };
 
 const NAV_ITEMS: { id: Tab; label: string; icon: string }[] = [
-  { id: "dashboard",   label: "Dashboard",    icon: "📊" },
-  { id: "produits",    label: "Produits",     icon: "🥩" },
-  { id: "commandes",   label: "Commandes",    icon: "📦" },
-  { id: "clients",     label: "Clients",      icon: "👥" },
-  { id: "promotions",  label: "Promotions",   icon: "🔥" },
+  { id: "dashboard",   label: "Dashboard",    icon: "⊞" },
+  { id: "produits",    label: "Produits",     icon: "◈" },
+  { id: "commandes",   label: "Commandes",    icon: "⊡" },
+  { id: "clients",     label: "Clients",      icon: "◉" },
+  { id: "promotions",  label: "Promotions",   icon: "◆" },
 ];
 
 // ── Login guard ───────────────────────────────────────────────────────────────
@@ -72,18 +72,27 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#1B5E20] flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm">
+    <div className="min-h-screen bg-gradient-to-br from-[#1B5E20] to-[#0D3B13] flex flex-col items-center justify-center px-4">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm">
+        {/* Header */}
         <div className="text-center mb-7">
-          <div className="flex justify-center mb-3"><Logo size={52} /></div>
-          <h1 className="font-playfair text-2xl font-bold text-gray-900">Administration</h1>
-          <p className="text-gray-500 text-sm mt-1">Baraka Shop — Accès réservé</p>
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-[#1B5E20]/10 rounded-xl mb-4">
+            <Logo size={36} />
+          </div>
+          <h1 className="font-playfair text-2xl font-bold text-gray-900">Espace Boucher</h1>
+          <p className="text-gray-400 text-sm mt-1">Baraka Shop — Accès professionnel</p>
+          <div className="inline-flex items-center gap-1.5 bg-[#1B5E20]/8 border border-[#1B5E20]/15 text-[#1B5E20] text-xs font-semibold px-3 py-1 rounded-full mt-3 tracking-wider uppercase">
+            <span className="w-1.5 h-1.5 bg-[#1B5E20] rounded-full" />
+            Back-office
+          </div>
         </div>
+
         {err && (
-          <div className="bg-red-50 border border-red-100 text-red-700 text-sm px-4 py-3 rounded-lg mb-4">
+          <div className="bg-red-50 border border-red-100 text-red-700 text-sm px-4 py-3 rounded-lg mb-5 text-center">
             Identifiants incorrects.
           </div>
         )}
+
         <form onSubmit={handleSubmit} className="space-y-3">
           <input
             type="email"
@@ -91,6 +100,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
             value={email}
             onChange={(e) => { setEmail(e.target.value); setErr(false); }}
             className="input-field"
+            autoComplete="email"
             required
           />
           <input
@@ -99,15 +109,17 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
             value={pw}
             onChange={(e) => { setPw(e.target.value); setErr(false); }}
             className="input-field"
+            autoComplete="current-password"
             required
           />
-          <button type="submit" className="btn-green w-full justify-center py-3 mt-1">
+          <button type="submit" className="btn-green w-full justify-center py-3.5 text-sm mt-1">
             Accéder au back-office
           </button>
         </form>
+
         <p className="text-center text-xs text-gray-300 mt-6">
-          <Link href="/connexion" className="hover:text-gray-500 transition-colors">
-            ← Retour à la connexion client
+          <Link href="/" className="hover:text-gray-500 transition-colors">
+            Retour au site public →
           </Link>
         </p>
       </div>

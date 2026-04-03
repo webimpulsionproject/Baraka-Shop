@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Product } from "@/lib/data";
 import { useCart } from "@/lib/cart-context";
 
@@ -38,7 +39,7 @@ export default function ProductCard({ product }: { product: Product }) {
         hover:shadow-lg hover:-translate-y-1`}
     >
       {/* Image */}
-      <div className="relative h-52 w-full overflow-hidden bg-gray-50">
+      <Link href={`/produits/${product.slug}`} className="relative h-52 w-full overflow-hidden bg-gray-50 block">
         <Image
           src={product.image}
           alt={product.name}
@@ -71,16 +72,16 @@ export default function ProductCard({ product }: { product: Product }) {
             </span>
           </div>
         )}
-      </div>
+      </Link>
 
       {/* Body */}
       <div className="p-4 flex flex-col gap-1.5 flex-1">
         <span className="text-xs text-gray-400 uppercase tracking-wider font-medium">
           {product.category}
         </span>
-        <h3 className="font-playfair font-bold text-gray-900 text-base leading-snug group-hover:text-[#1B5E20] transition-colors duration-200">
+        <Link href={`/produits/${product.slug}`} className="font-playfair font-bold text-gray-900 text-base leading-snug hover:text-[#1B5E20] transition-colors duration-200 block">
           {product.name}
-        </h3>
+        </Link>
         {product.weight && (
           <span className="text-xs text-gray-400">{product.weight}</span>
         )}

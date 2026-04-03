@@ -21,8 +21,8 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-sm leading-relaxed mb-5">
-              La qualite halal, a votre service depuis le premier jour.
-              Boucherie artisanale a Mons-en-Baroeul.
+              La qualité halal, à votre service depuis le premier jour.
+              Boucherie artisanale à Mons-en-Barœul.
             </p>
             <a
               href="https://www.facebook.com/Barakashop17/"
@@ -62,7 +62,7 @@ export default function Footer() {
           <div>
             <h4 className="text-xs font-semibold text-white/35 uppercase tracking-widest mb-5">Horaires</h4>
             <ul className="space-y-2 text-sm">
-              <li className="text-white/25">Lundi — Ferme</li>
+              <li className="text-white/25">Lundi — Fermé</li>
               {["Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"].map((d) => (
                 <li key={d} className="text-white/50">{d} — 8h30 – 20h00</li>
               ))}
@@ -75,7 +75,7 @@ export default function Footer() {
             <h4 className="text-xs font-semibold text-white/35 uppercase tracking-widest mb-5">Contact</h4>
             <ul className="space-y-3 text-sm">
               <li className="text-white/50 leading-relaxed">
-                17 rue Corneille<br />59370 Mons-en-Baroeul
+                17 rue Corneille<br />59370 Mons-en-Barœul
               </li>
               <li>
                 <a href="tel:0952291306" className="text-white/50 hover:text-white transition-colors">
@@ -97,11 +97,11 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/8 pt-8 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-white/25">
-          <p>© {year} Baraka Shop — Mons-en-Baroeul. Tous droits reserves.</p>
+          <p>© {year} Baraka Shop — Mons-en-Barœul. Tous droits réservés.</p>
           <div className="flex flex-wrap gap-5 justify-center">
-            <Link href="/mentions-legales" className="hover:text-white/50 transition-colors">Mentions legales</Link>
+            <Link href="/mentions-legales" className="hover:text-white/50 transition-colors">Mentions légales</Link>
             <Link href="/cgv" className="hover:text-white/50 transition-colors">CGV</Link>
-            <Link href="/politique-de-confidentialite" className="hover:text-white/50 transition-colors">Confidentialite & RGPD</Link>
+            <Link href="/politique-de-confidentialite" className="hover:text-white/50 transition-colors">Confidentialité & RGPD</Link>
           </div>
         </div>
       </div>
