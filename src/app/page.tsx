@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { products, reviews } from "@/lib/data";
+import { prisma } from "@/lib/prisma";
+import { Product } from "@/lib/data";
 import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
 import PromoWeekSection from "@/components/PromoWeekSection";
@@ -87,9 +88,10 @@ function IconTruck() {
 }
 
 /* ── Banniere Aid ─────────────────────────────────────────────── */
-function AidBanner() {
+function AidBanner({ show }: { show: boolean }) {
+  if (!show) return null;
   return (
-    <section className="bg-[#1B5E20]">
+    <section className="bg-[#5D3A1A]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-white text-sm text-center sm:text-left">
@@ -183,22 +185,54 @@ function Hero() {
 /* ── Trust Bar ────────────────────────────────────────────────── */
 function TrustBar() {
   const items = [
-    { icon: <IconHalal />, title: "100% Halal Certifie",   sub: "Controle ACMF" },
-    { icon: <IconClock />, title: "Click & Collect 30 min", sub: "Commandez en ligne" },
-    { icon: <IconKnife />, title: "Decoupe sur demande",    sub: "Service inclus" },
-    { icon: <IconStore />, title: "Ouvert 6j/7",            sub: "Sauf lundi" },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} className="w-5 h-5">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+        </svg>
+      ),
+      title: "100% Halal Certifie",
+      sub: "Controle ACMF",
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} className="w-5 h-5">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
+        </svg>
+      ),
+      title: "Click & Collect 30 min",
+      sub: "Commandez en ligne",
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} className="w-5 h-5">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+        </svg>
+      ),
+      title: "Decoupe sur demande",
+      sub: "Service inclus",
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} className="w-5 h-5">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+      title: "Ouvert 6j/7",
+      sub: "Sauf lundi",
+    },
   ];
   return (
     <section className="bg-white border-b border-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-gray-100">
-          {items.map((item, i) => (
-            <div key={item.title} className={`flex items-center gap-4 px-6 ${i === 0 ? "pl-0" : ""}`}>
-              <div className="w-10 h-10 rounded-full bg-[#1B5E20]/8 flex items-center justify-center text-[#1B5E20] flex-shrink-0">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-gray-100">
+          {items.map((item) => (
+            <div key={item.title} className="flex items-center gap-4 px-6 py-4 bg-white">
+              <div className="w-10 h-10 rounded-xl bg-[#1B5E20]/8 flex items-center justify-center text-[#1B5E20] flex-shrink-0">
                 {item.icon}
               </div>
               <div>
-                <p className="font-semibold text-gray-900 text-sm">{item.title}</p>
+                <p className="font-semibold text-gray-900 text-sm leading-tight">{item.title}</p>
                 <p className="text-xs text-gray-400 mt-0.5">{item.sub}</p>
               </div>
             </div>
@@ -216,9 +250,10 @@ function Categories() {
       name: "Boeuf & Veau",
       sub: "Charolais, Merguez, Rosbif",
       bg: "bg-[#1B5E20]",
+      href: "/produits?categorie=boeuf",
       icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.2} className="w-8 h-8">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c-1.2 5.4-6 7.8-6 12a6 6 0 0012 0c0-4.2-4.8-6.6-6-12z" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.4} className="w-8 h-8">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
         </svg>
       ),
     },
@@ -226,10 +261,11 @@ function Categories() {
       name: "Agneau",
       sub: "Gigot, Cotelettes, Souris",
       bg: "bg-[#E64A19]",
+      href: "/produits?categorie=agneau",
       icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.2} className="w-8 h-8">
-          <circle cx="12" cy="10" r="4" />
-          <path strokeLinecap="round" d="M8 14c-3 1-4 4-4 7h16c0-3-1-6-4-7" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.4} className="w-8 h-8">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" />
         </svg>
       ),
     },
@@ -237,9 +273,10 @@ function Categories() {
       name: "Volaille",
       sub: "Poulet fermier, Dinde",
       bg: "bg-[#C62828]",
+      href: "/produits?categorie=volaille",
       icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.2} className="w-8 h-8">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 2C9 2 7 4 7 6c0 1 .4 2 1 2.5L4 14h4l1-2 3 5 3-5 1 2h4l-4-5.5c.6-.5 1-1.5 1-2.5 0-2-2-4-5-4z" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.4} className="w-8 h-8">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
         </svg>
       ),
     },
@@ -247,9 +284,10 @@ function Categories() {
       name: "Traiteur",
       sub: "Couscous, Tajines, BBQ",
       bg: "bg-[#C9922A]",
+      href: "/produits?categorie=traiteur",
       icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.2} className="w-8 h-8">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6h7.5v2.25h-7.5V6zM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.616 4.5 4.698V18a2.25 2.25 0 002.25 2.25h10.5A2.25 2.25 0 0019.5 18V4.698c0-1.082-.807-1.998-1.907-2.126A48.355 48.355 0 0012 2.25z" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.4} className="w-8 h-8">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.87c1.355 0 2.697.055 4.024.165C17.155 8.51 18 9.473 18 10.608v2.513m-3-4.87v-1.5m-6 4.5v5.25m6-5.25v5.25m6-5.25v1.5a3 3 0 01-3 3H9a3 3 0 01-3-3v-1.5" />
         </svg>
       ),
     },
@@ -257,9 +295,10 @@ function Categories() {
       name: "Epicerie Vrac",
       sub: "Epices, Legumineuses, Huiles",
       bg: "bg-[#2E7D32]",
+      href: "/epicerie",
       icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.2} className="w-8 h-8">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15M14.25 3.104c.251.023.501.05.75.082M19.8 15a2.25 2.25 0 01-2.25 2.25H6.45A2.25 2.25 0 014.2 15m15.6 0v-1.171a.75.75 0 00-.659-.74l-3.891-.486a.75.75 0 01-.659-.74V9.75" />
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.4} className="w-8 h-8">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
         </svg>
       ),
     },
@@ -278,7 +317,7 @@ function Categories() {
           {cats.map((c) => (
             <Link
               key={c.name}
-              href="/produits"
+              href={c.href}
               className={`${c.bg} text-white rounded-2xl p-6 flex flex-col gap-4 hover:opacity-90 hover:-translate-y-0.5 transition-all duration-200 group`}
             >
               <div className="opacity-80">{c.icon}</div>
@@ -376,8 +415,7 @@ function CoupeSection() {
 }
 
 /* ── Featured Products ────────────────────────────────────────── */
-function FeaturedProducts() {
-  const featured = products.filter((p) => p.badge === "Bestseller").slice(0, 6);
+function FeaturedProducts({ featured }: { featured: Product[] }) {
   return (
     <section className="py-20 bg-[#FAFAF8]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -536,8 +574,12 @@ function AidPacks() {
 }
 
 /* ── Avis ─────────────────────────────────────────────────────── */
-function ReviewsSection() {
-  const avg = (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1);
+type DisplayReview = { id: number; author: string; rating: number; text: string; date: string };
+
+function ReviewsSection({ reviews }: { reviews: DisplayReview[] }) {
+  const avg = reviews.length
+    ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)
+    : "5.0";
   return (
     <section className="py-20 bg-[#1A1A1A]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -568,10 +610,9 @@ function ReviewsSection() {
                 </div>
                 <span className="text-white/25 text-xs">{r.date}</span>
               </div>
-              <p className="text-white/65 text-sm leading-relaxed mb-4">&ldquo;{r.comment}&rdquo;</p>
+              <p className="text-white/65 text-sm leading-relaxed mb-4">&ldquo;{r.text}&rdquo;</p>
               <div className="flex items-center justify-between pt-4 border-t border-white/8">
-                <p className="text-white font-semibold text-sm">{r.name}</p>
-                {r.product && <span className="text-white/30 text-xs">{r.product}</span>}
+                <p className="text-white font-semibold text-sm">{r.author}</p>
               </div>
             </div>
           ))}
@@ -690,19 +731,35 @@ function MagasinSection() {
 }
 
 /* ── Page ─────────────────────────────────────────────────────── */
-export default function HomePage() {
+export default async function HomePage() {
+  const [dbProducts, dbReviews, modeAid] = await Promise.all([
+    prisma.product.findMany({
+      where: { badge: "Bestseller", inStock: true },
+      orderBy: { createdAt: "desc" },
+      take: 6,
+    }),
+    prisma.review.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 6,
+    }),
+    prisma.siteSettings.findUnique({ where: { key: "mode_aid" } }),
+  ]);
+
+  const featured = dbProducts.map((p) => ({ ...p, isHalal: true as const })) as unknown as Product[];
+  const showAid = modeAid?.value === "true";
+
   return (
     <>
-      <AidBanner />
+      <AidBanner show={showAid} />
       <Hero />
       <TrustBar />
       <PromoWeekSection />
       <Categories />
       <CoupeSection />
-      <FeaturedProducts />
+      <FeaturedProducts featured={featured} />
       <DeliverySection />
       <AidPacks />
-      <ReviewsSection />
+      <ReviewsSection reviews={dbReviews} />
       <MagasinSection />
       <Footer />
     </>
