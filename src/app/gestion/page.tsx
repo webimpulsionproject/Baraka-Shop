@@ -25,16 +25,31 @@ interface DBMessage { id: number; name: string; email: string; phone: string | n
 interface SiteSettings { mode_aid: string; mode_ramadan: string; }
 
 const PRESET_IMAGES = [
-  { label: "Steak / Entrecôte",    url: "https://images.unsplash.com/photo-1529694157872-4e0c0f3b238b?w=600&h=450&fit=crop&auto=format&q=80" },
-  { label: "Viande hachée",        url: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=450&fit=crop&auto=format&q=80" },
-  { label: "Côte de bœuf",         url: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&h=450&fit=crop&auto=format&q=80" },
-  { label: "Merguez / Saucisses",  url: "https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=600&h=450&fit=crop&auto=format&q=80" },
-  { label: "Agneau / Gigot",       url: "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=600&h=450&fit=crop&auto=format&q=80" },
-  { label: "Poulet entier",        url: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=600&h=450&fit=crop&auto=format&q=80" },
-  { label: "Morceaux de poulet",   url: "https://images.unsplash.com/photo-1598103442097-8b74394b95c7?w=600&h=450&fit=crop&auto=format&q=80" },
-  { label: "Brochettes",           url: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&h=450&fit=crop&auto=format&q=80" },
-  { label: "Épices",               url: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&h=450&fit=crop&auto=format&q=80" },
-  { label: "Huile d'olive",        url: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=600&h=450&fit=crop&auto=format&q=80" },
+  // Bœuf & Veau
+  { label: "Entrecôte",          cat: "Bœuf",     url: "https://images.unsplash.com/photo-1529694157872-4e0c0f3b238b?w=600&h=450&fit=crop&auto=format&q=80" },
+  { label: "Côte de bœuf",       cat: "Bœuf",     url: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&h=450&fit=crop&auto=format&q=80" },
+  { label: "Viande hachée",      cat: "Bœuf",     url: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=450&fit=crop&auto=format&q=80" },
+  { label: "Rôti de bœuf",       cat: "Bœuf",     url: "https://images.unsplash.com/photo-1558030006-450675393462?w=600&h=450&fit=crop&auto=format&q=80" },
+  { label: "Bavette",             cat: "Bœuf",     url: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=600&h=450&fit=crop&auto=format&q=80" },
+  // Agneau & Mouton
+  { label: "Gigot d'agneau",     cat: "Agneau",   url: "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=600&h=450&fit=crop&auto=format&q=80" },
+  { label: "Côtelettes agneau",  cat: "Agneau",   url: "https://images.unsplash.com/photo-1602524813061-4fcabc22c72a?w=600&h=450&fit=crop&auto=format&q=80" },
+  { label: "Épaule agneau",      cat: "Agneau",   url: "https://images.unsplash.com/photo-1547496502-affa22d38842?w=600&h=450&fit=crop&auto=format&q=80" },
+  // Volaille
+  { label: "Poulet entier",      cat: "Volaille", url: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=600&h=450&fit=crop&auto=format&q=80" },
+  { label: "Cuisses de poulet",  cat: "Volaille", url: "https://images.unsplash.com/photo-1598103442097-8b74394b95c7?w=600&h=450&fit=crop&auto=format&q=80" },
+  { label: "Blanc de poulet",    cat: "Volaille", url: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=600&h=450&fit=crop&auto=format&q=80" },
+  { label: "Dinde",              cat: "Volaille", url: "https://images.unsplash.com/photo-1574672280600-4accfa5b6f98?w=600&h=450&fit=crop&auto=format&q=80" },
+  // Traiteur
+  { label: "Merguez",            cat: "Traiteur", url: "https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=600&h=450&fit=crop&auto=format&q=80" },
+  { label: "Brochettes",         cat: "Traiteur", url: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&h=450&fit=crop&auto=format&q=80" },
+  { label: "Kefta",              cat: "Traiteur", url: "https://images.unsplash.com/photo-1544510806-2a8cf7c4b5fb?w=600&h=450&fit=crop&auto=format&q=80" },
+  { label: "Viande marinée",     cat: "Traiteur", url: "https://images.unsplash.com/photo-1558030006-450675393462?w=600&h=450&fit=crop&auto=format&q=80" },
+  // Épicerie
+  { label: "Épices",             cat: "Épicerie", url: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=600&h=450&fit=crop&auto=format&q=80" },
+  { label: "Huile d'olive",      cat: "Épicerie", url: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=600&h=450&fit=crop&auto=format&q=80" },
+  { label: "Légumineuses",       cat: "Épicerie", url: "https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=600&h=450&fit=crop&auto=format&q=80" },
+  { label: "Dattes",             cat: "Épicerie", url: "https://images.unsplash.com/photo-1583227122027-d2f3e1c2e2e5?w=600&h=450&fit=crop&auto=format&q=80" },
 ];
 
 const STATUS_COLORS: Record<OrderStatus, string> = {
@@ -118,7 +133,7 @@ function LoginScreen({ onLogin }: { onLogin: (name: string) => void }) {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </span>
-              <input type="text" placeholder="leboucher" value={username}
+              <input type="text" placeholder="Nom d'utilisateur" value={username}
                 onChange={(e) => { setUsername(e.target.value); setErr(""); }}
                 className="input-field pl-9" autoComplete="username" required />
             </div>
@@ -598,45 +613,91 @@ export default function GestionPage() {
                   <h3 className="font-semibold text-gray-900 mb-4 text-sm">{editProd ? `Modifier — ${editProd.name}` : "Nouveau produit"}</h3>
 
                   {/* Sélecteur image */}
-                  <div className="mb-4">
-                    <label className="block text-xs font-medium text-gray-400 mb-2 uppercase tracking-wide">Photo</label>
-                    {prodForm.image && (
-                      <div className="mb-3 flex items-center gap-3">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={prodForm.image} alt="apercu" className="w-14 h-14 rounded-lg object-cover border border-gray-100" />
-                        <p className="text-xs text-gray-400">Image sélectionnée</p>
+                  <div className="mb-5">
+                    <label className="block text-xs font-medium text-gray-400 mb-3 uppercase tracking-wide">Photo du produit</label>
+
+                    {/* Aperçu + actions */}
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className="w-28 h-28 rounded-xl border-2 border-dashed border-gray-200 overflow-hidden flex-shrink-0 bg-gray-50 flex items-center justify-center">
+                        {prodForm.image ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={prodForm.image} alt="aperçu" className="w-full h-full object-cover" />
+                        ) : (
+                          <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                          </svg>
+                        )}
                       </div>
-                    )}
-                    <button type="button" onClick={() => setShowImagePicker(v => !v)}
-                      className="text-xs text-[#1B5E20] border border-[#1B5E20]/30 px-3 py-1.5 rounded-lg hover:bg-[#1B5E20]/5 transition-colors">
-                      {showImagePicker ? "Masquer" : "Choisir une image"}
-                    </button>
-                    {showImagePicker && (
-                      <div className="mt-3 grid grid-cols-3 sm:grid-cols-5 gap-2">
-                        {PRESET_IMAGES.map(img => (
-                          <button key={img.url} type="button"
-                            onClick={() => { setProdForm(f => ({ ...f, image: img.url })); setShowImagePicker(false); }}
-                            className={`rounded-lg overflow-hidden border-2 transition-all text-left ${prodForm.image === img.url ? "border-[#1B5E20]" : "border-transparent hover:border-gray-300"}`}>
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={img.url} alt={img.label} className="w-full h-14 object-cover" />
-                            <p className="text-[9px] text-center text-gray-500 py-1 px-1 leading-tight">{img.label}</p>
-                          </button>
-                        ))}
-                        <label className="border-2 border-dashed border-gray-200 rounded-lg flex flex-col items-center justify-center h-14 cursor-pointer hover:border-[#1B5E20] transition-colors">
-                          <span className="text-xs text-gray-400">+ Fichier</span>
+                      <div className="flex-1 space-y-2">
+                        <button type="button" onClick={() => setShowImagePicker(v => !v)}
+                          className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium border transition-all ${
+                            showImagePicker
+                              ? "bg-[#1B5E20] text-white border-[#1B5E20]"
+                              : "bg-white text-[#1B5E20] border-[#1B5E20]/40 hover:bg-[#1B5E20]/5"
+                          }`}>
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                          </svg>
+                          {showImagePicker ? "Fermer la galerie" : "Choisir dans la galerie"}
+                        </button>
+                        <label className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium border border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50 transition-all cursor-pointer">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                          </svg>
+                          Importer un fichier
                           <input type="file" accept="image/*" className="hidden" onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) {
                               const reader = new FileReader();
-                              reader.onload = (ev) => setProdForm(f => ({ ...f, image: ev.target?.result as string }));
+                              reader.onload = (ev) => { setProdForm(f => ({ ...f, image: ev.target?.result as string })); setShowImagePicker(false); }
                               reader.readAsDataURL(file);
                             }
                           }} />
                         </label>
+                        <input value={prodForm.image} onChange={e => setProdForm(f => ({ ...f, image: e.target.value }))}
+                          className="input-field text-xs" placeholder="Ou coller une URL d'image…" />
+                      </div>
+                    </div>
+
+                    {/* Galerie */}
+                    {showImagePicker && (
+                      <div className="border border-gray-100 rounded-xl bg-gray-50/50 p-4">
+                        {(["Bœuf", "Agneau", "Volaille", "Traiteur", "Épicerie"] as const).map(cat => {
+                          const imgs = PRESET_IMAGES.filter(i => i.cat === cat);
+                          return (
+                            <div key={cat} className="mb-5 last:mb-0">
+                              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-2.5">{cat}</p>
+                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                                {imgs.map(img => {
+                                  const selected = prodForm.image === img.url;
+                                  return (
+                                    <button key={img.url} type="button"
+                                      onClick={() => { setProdForm(f => ({ ...f, image: img.url })); setShowImagePicker(false); }}
+                                      className={`group relative rounded-xl overflow-hidden border-2 transition-all ${
+                                        selected ? "border-[#1B5E20] shadow-md" : "border-transparent hover:border-[#1B5E20]/40"
+                                      }`}>
+                                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                                      <img src={img.url} alt={img.label} className="w-full h-24 object-cover group-hover:scale-105 transition-transform duration-200" />
+                                      <div className={`absolute inset-0 transition-opacity ${selected ? "bg-[#1B5E20]/20" : "bg-transparent group-hover:bg-black/5"}`} />
+                                      {selected && (
+                                        <div className="absolute top-2 right-2 w-5 h-5 bg-[#1B5E20] rounded-full flex items-center justify-center shadow">
+                                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                          </svg>
+                                        </div>
+                                      )}
+                                      <p className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent text-white text-[10px] font-medium px-2 py-1.5 text-center leading-tight">
+                                        {img.label}
+                                      </p>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
-                    <input value={prodForm.image} onChange={e => setProdForm(f => ({ ...f, image: e.target.value }))}
-                      className="input-field text-xs mt-2" placeholder="Ou coller une URL..." />
                   </div>
 
                   <form onSubmit={saveProd} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
