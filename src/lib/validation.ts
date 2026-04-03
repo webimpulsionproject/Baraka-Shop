@@ -53,6 +53,44 @@ export const ProductSchema = z.object({
   decoupeOptions: z.boolean().optional(),
 });
 
-export type OrderInput = z.infer<typeof OrderSchema>;
-export type ReviewInput = z.infer<typeof ReviewSchema>;
+/**
+ * Schéma pour les routes admin (inputs du formulaire HTML — strings coercées).
+ * Utilisé dans POST /api/gestion/produits et PUT /api/gestion/produits/[id]
+ */
+const VALID_CATEGORIES = [
+  "Bœuf & Veau",
+  "Agneau & Mouton",
+  "Volaille",
+  "Traiteur & Marinés",
+  "Épicerie",
+] as const;
+
+const VALID_BADGES = ["Nouveau", "Promo", "Bestseller", "Aïd", ""] as const;
+
+export const ProductInputSchema = z.object({
+  name:           z.string().min(2).max(200).trim(),
+  slug:           z.string().regex(/^[a-z0-9-]+$/).max(200).optional(),
+  category:       z.enum(VALID_CATEGORIES),
+  price:          z.coerce.number().positive("Prix invalide").max(10000),
+  promoPrice:     z.coerce.number().positive().max(10000).nullable().optional(),
+  promoEndDate:   z.string().max(50).optional().nullable(),
+  weight:         z.string().max(50).optional().nullable(),
+  image:          z.string().url("URL d'image invalide").max(500),
+  description:    z.string().max(1000).optional(),
+  badge:          z.enum(VALID_BADGES).optional().nullable(),
+  inStock:        z.boolean().optional().default(true),
+  stock:          z.coerce.number().int().min(0).optional().nullable(),
+  origin:         z.string().max(100).optional().nullable(),
+  decoupeOptions: z.boolean().optional().default(false),
+});
+
+/** ID de ressource — valide un entier positif extrait depuis params */
+export function parseId(raw: string): number | null {
+  const id = parseInt(raw, 10);
+  return Number.isInteger(id) && id > 0 ? id : null;
+}
+
+export type OrderInput   = z.infer<typeof OrderSchema>;
+export type ReviewInput  = z.infer<typeof ReviewSchema>;
 export type ProductInput = z.infer<typeof ProductSchema>;
+export type ProductInputData = z.infer<typeof ProductInputSchema>;
