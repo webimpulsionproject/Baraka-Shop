@@ -1,8 +1,7 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCart } from "@/lib/cart-context";
 import Logo from "@/components/Logo";
 
 function useUser() {
@@ -24,12 +23,9 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
-  const [open, setOpen]           = useState(false);
-  const [scrolled, setScrolled]   = useState(false);
-  const [cartBounce, setCartBounce] = useState(false);
-  const pathname                  = usePathname();
-  const { totalItems }            = useCart();
-  const prevTotal                 = useRef(totalItems);
+  const [open, setOpen]     = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const pathname            = usePathname();
   const userName                  = useUser();
 
   /* Scroll shadow */
@@ -38,15 +34,6 @@ export default function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  /* Cart bounce */
-  useEffect(() => {
-    if (totalItems > prevTotal.current) {
-      setCartBounce(true);
-      setTimeout(() => setCartBounce(false), 500);
-    }
-    prevTotal.current = totalItems;
-  }, [totalItems]);
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -125,27 +112,7 @@ export default function Navbar() {
               href="/produits"
               className="hidden md:inline-flex items-center gap-1.5 bg-[#1B5E20] hover:bg-[#154818] text-white text-xs font-semibold tracking-wider uppercase px-5 py-2.5 rounded-lg transition-all duration-200"
             >
-              Commander
-            </Link>
-
-            {/* Panier */}
-            <Link
-              href="/panier"
-              className="relative p-2.5 text-gray-500 hover:text-[#1B5E20] transition-colors"
-              aria-label={`Panier — ${totalItems} article${totalItems !== 1 ? "s" : ""}`}
-            >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-              </svg>
-              {totalItems > 0 && (
-                <span
-                  className={`absolute top-1 right-1 bg-[#C9922A] text-white text-[9px] font-bold rounded-full h-4 w-4 flex items-center justify-center ${
-                    cartBounce ? "animate-cart-bounce" : ""
-                  }`}
-                >
-                  {totalItems > 9 ? "9+" : totalItems}
-                </span>
-              )}
+              Voir nos produits
             </Link>
 
             {/* Burger mobile */}
@@ -198,7 +165,7 @@ export default function Navbar() {
                   onClick={() => setOpen(false)}
                   className="block text-center bg-[#1B5E20] text-white font-semibold py-3 rounded-lg text-xs tracking-wider uppercase hover:bg-[#154818] transition-colors"
                 >
-                  Voir nos produits
+                  Nos produits
                 </Link>
               </div>
             </div>

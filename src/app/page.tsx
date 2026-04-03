@@ -455,40 +455,32 @@ function DeliverySection() {
           <p className="text-gray-400 mt-2 text-sm">Deux options pour recevoir vos produits</p>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 max-w-4xl">
-          {/* Click & Collect */}
-          <div className="bg-[#1B5E20] rounded-2xl p-8">
+          {/* Click & Collect — Bientot */}
+          <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-8">
             <div className="flex items-center justify-between mb-6">
-              <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white">
+              <div className="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center text-gray-400">
                 <IconStore />
               </div>
-              <span className="bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full">Disponible</span>
+              <span className="bg-gray-200 text-gray-500 text-xs font-bold px-3 py-1 rounded-full">Bientot</span>
             </div>
-            <h3 className="font-playfair text-2xl font-bold text-white mb-1">Click &amp; Collect</h3>
-            <p className="text-white/50 text-sm mb-8">Pret en 30 minutes · Gratuit</p>
-            <ol className="space-y-3 mb-8">
-              {[
-                "Choisissez vos produits en ligne",
-                "Selectionnez votre creneau",
-                "Recuperez au 17 rue Corneille",
-              ].map((step, i) => (
-                <li key={i} className="flex items-start gap-3 text-sm text-white/75">
-                  <span className="w-5 h-5 rounded-full bg-[#C9922A] text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
-                    {i + 1}
-                  </span>
-                  {step}
-                </li>
-              ))}
-            </ol>
-            <Link
-              href="/produits"
-              className="inline-flex items-center gap-2 bg-[#C9922A] hover:bg-[#A87520] text-white font-semibold px-6 py-3 rounded-lg transition-all text-sm"
-            >
-              Commander
-              <IconArrow />
-            </Link>
+            <h3 className="font-playfair text-2xl font-bold text-gray-400 mb-1">Click &amp; Collect</h3>
+            <p className="text-gray-400 text-sm mb-8">Pret en 30 minutes · Gratuit</p>
+            <p className="text-gray-400 text-sm leading-relaxed mb-6">
+              Commandez en ligne et recuperez vos produits en boutique sous 30 minutes.
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="email"
+                placeholder="votre@email.fr"
+                className="flex-1 px-4 py-3 border border-gray-200 rounded-lg text-sm focus:outline-none bg-white"
+              />
+              <button className="bg-gray-200 text-gray-500 font-semibold px-4 py-3 rounded-lg text-sm hover:bg-gray-300 transition-colors">
+                M&apos;alerter
+              </button>
+            </div>
           </div>
 
-          {/* Livraison */}
+          {/* Livraison — Bientot */}
           <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl p-8">
             <div className="flex items-center justify-between mb-6">
               <div className="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center text-gray-400">

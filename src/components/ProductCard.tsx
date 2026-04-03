@@ -1,9 +1,6 @@
-"use client";
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/lib/data";
-import { useCart } from "@/lib/cart-context";
 
 const badgeColors: Record<string, string> = {
   Nouveau:    "bg-[#1B5E20] text-white",
@@ -13,24 +10,12 @@ const badgeColors: Record<string, string> = {
 };
 
 export default function ProductCard({ product }: { product: Product }) {
-  const { addItem } = useCart();
-  const [added, setAdded] = useState(false);
-  const [ripple, setRipple] = useState(false);
-
   const activePrice = product.promoPrice ?? product.price;
   const isPromo = !!product.promoPrice && product.promoPrice < product.price;
   const savings = isPromo ? (product.price - product.promoPrice!).toFixed(2) : null;
   const discountPct = isPromo
     ? Math.round(((product.price - product.promoPrice!) / product.price) * 100)
     : null;
-
-  const handleAdd = () => {
-    addItem({ ...product, price: activePrice } as Product);
-    setAdded(true);
-    setRipple(true);
-    setTimeout(() => setRipple(false), 600);
-    setTimeout(() => setAdded(false), 2000);
-  };
 
   return (
     <div
@@ -113,40 +98,17 @@ export default function ProductCard({ product }: { product: Product }) {
             </div>
           )}
 
-          {/* Bouton avec micro-animation ripple */}
-          <button
-            onClick={handleAdd}
-            disabled={product.inStock === false}
-            aria-label={added ? "Produit ajouté au panier" : `Ajouter ${product.name} au panier`}
-            className={`relative w-full overflow-hidden flex items-center justify-center gap-1.5 text-white text-sm font-semibold py-2.5 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed
-              ${added
-                ? "bg-[#1B5E20] scale-[0.98]"
-                : isPromo
-                  ? "bg-[#C62828] hover:bg-[#8E0000] active:scale-95"
-                  : "bg-[#E64A19] hover:bg-[#BF360C] active:scale-95"
-              }`}
+          <Link
+            href={`/produits/${product.slug}`}
+            className={`w-full flex items-center justify-center gap-1.5 text-white text-sm font-semibold py-2.5 rounded-xl transition-all duration-200 active:scale-95
+              ${isPromo ? "bg-[#C62828] hover:bg-[#8E0000]" : "bg-[#1B5E20] hover:bg-[#154818]"}`}
           >
-            {/* Ripple effect */}
-            {ripple && (
-              <span className="absolute inset-0 animate-ping rounded-xl bg-white opacity-20" />
-            )}
-
-            {added ? (
-              <span className="flex items-center gap-1.5 animate-fade-in">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                </svg>
-                Ajouté !
-              </span>
-            ) : (
-              <>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                </svg>
-                Ajouter
-              </>
-            )}
-          </button>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Voir le produit
+          </Link>
         </div>
       </div>
     </div>
