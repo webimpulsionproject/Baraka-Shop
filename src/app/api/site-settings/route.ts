@@ -8,6 +8,6 @@ export async function GET() {
   const settings: Record<string, string> = { ...DEFAULTS };
   for (const row of rows) settings[row.key] = row.value;
   return NextResponse.json(settings, {
-    headers: { "Cache-Control": "s-maxage=30, stale-while-revalidate=60" },
+    headers: { "Cache-Control": "no-store" },
   });
 }

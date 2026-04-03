@@ -6,6 +6,8 @@ import ProductCard from "@/components/ProductCard";
 import Footer from "@/components/Footer";
 import PromoWeekSection from "@/components/PromoWeekSection";
 
+export const dynamic = "force-dynamic";
+
 /* ── Icones SVG inline ────────────────────────────────────────── */
 function IconHalal() {
   return (

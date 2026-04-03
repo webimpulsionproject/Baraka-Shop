@@ -39,10 +39,6 @@ export default function ProductCard({ product }: { product: Product }) {
             -{discountPct}%
           </div>
         )}
-        {/* Halal badge */}
-        <div className="absolute top-3 right-3 bg-[#1B5E20]/90 backdrop-blur-sm text-white text-xs font-semibold px-2 py-0.5 rounded-md">
-          Halal ✓
-        </div>
         {/* Optional badge */}
         {product.badge && product.badge !== "Promo" && (
           <div className={`absolute bottom-3 left-3 text-xs font-semibold px-2 py-0.5 rounded-md shadow-sm ${badgeColors[product.badge]}`}>
