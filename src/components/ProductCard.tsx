@@ -1,6 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Product } from "@/lib/data";
+
+export type CardProduct = {
+  id: number;
+  name: string;
+  slug: string;
+  category: string;
+  price: number;
+  promoPrice?: number | null;
+  weight?: string | null;
+  image: string;
+  description: string;
+  badge?: string | null;
+  inStock: boolean;
+  stock?: number | null;
+};
 
 const badgeColors: Record<string, string> = {
   Nouveau:    "bg-[#1B5E20] text-white",
@@ -9,7 +23,7 @@ const badgeColors: Record<string, string> = {
   "Aïd":      "bg-[#1B5E20] text-white",
 };
 
-export default function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({ product }: { product: CardProduct }) {
   const activePrice = product.promoPrice ?? product.price;
   const isPromo = !!product.promoPrice && product.promoPrice < product.price;
   const savings = isPromo ? (product.price - product.promoPrice!).toFixed(2) : null;
