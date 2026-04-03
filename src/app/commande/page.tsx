@@ -210,24 +210,22 @@ export default function CommandePage() {
                 </div>
               </div>
 
-              {/* Créneaux Click & Collect */}
+              {/* Click & Collect — Prochainement */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h2 className="font-playfair text-lg font-bold text-gray-900 mb-2">Click & Collect 🏪</h2>
-                <p className="text-sm text-gray-500 mb-4">17 rue Corneille, Mons-en-Barœul — Prêt en 30 min</p>
-                <p className="text-sm font-semibold text-gray-700 mb-3">Choisissez votre créneau :</p>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                  {SLOTS.map((s) => (
-                    <button key={s} onClick={() => setSlot(s)}
-                      className={`py-2 px-2 rounded-lg text-xs font-medium border transition-all ${
-                        slot === s
-                          ? "bg-[#1B5E20] text-white border-[#1B5E20]"
-                          : "border-gray-200 text-gray-700 hover:border-[#1B5E20] hover:text-[#1B5E20]"
-                      }`}>
-                      {s}
-                    </button>
-                  ))}
+                <div className="flex items-center gap-3 mb-3">
+                  <h2 className="font-playfair text-lg font-bold text-gray-900">Click & Collect</h2>
+                  <span className="bg-[#C9922A]/10 text-[#C9922A] text-xs font-semibold px-2.5 py-1 rounded-full border border-[#C9922A]/20">Prochainement</span>
                 </div>
-                {slot && <p className="mt-3 text-sm text-[#1B5E20] font-medium">✓ Créneau sélectionné : {slot}</p>}
+                <p className="text-sm text-gray-400">Le Click & Collect sera bientôt disponible. Revenez très vite !</p>
+              </div>
+
+              {/* Livraison — Prochainement */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <h2 className="font-playfair text-lg font-bold text-gray-900">Livraison à domicile</h2>
+                  <span className="bg-[#C9922A]/10 text-[#C9922A] text-xs font-semibold px-2.5 py-1 rounded-full border border-[#C9922A]/20">Prochainement</span>
+                </div>
+                <p className="text-sm text-gray-400">La livraison à domicile sera bientôt disponible dans votre secteur.</p>
               </div>
 
               {/* Code promo */}

@@ -27,15 +27,15 @@ export function middleware(request: NextRequest) {
     return sessionToken === secret || bearerToken === secret;
   }
 
-  // ── Route Boucher Admin (/admin) ───────────────────────────────────────────
-  // La page /admin gère son propre login — seules les APIs sont protégées ici
-  const isAdminAPI = (pathname === "/api/commandes" && request.method === "GET") ||
-                     (pathname.startsWith("/api/admin/") && pathname !== "/api/admin/login");
+  // ── Route Gestion (/gestion) — APIs protégées, page gère son propre login ──
+  const isGestionAPI = (pathname === "/api/commandes" && request.method === "GET") ||
+                       (pathname.startsWith("/api/gestion/") && pathname !== "/api/gestion/login") ||
+                       (pathname.startsWith("/api/admin/") && pathname !== "/api/admin/login");
 
-  if (isAdminAPI) {
+  if (isGestionAPI) {
     const adminSecret = process.env.ADMIN_SECRET;
     if (!adminSecret) {
-      console.warn("[SECURITY] ADMIN_SECRET non configuré — APIs admin non protégées !");
+      console.warn("[SECURITY] ADMIN_SECRET non configuré — APIs gestion non protégées !");
       return response;
     }
     if (!isAuthorized(adminSecret, "admin_session")) {
@@ -68,6 +68,7 @@ export const config = {
     "/admin-it/:path*",
     "/api/commandes",
     "/api/admin/:path*",
+    "/api/gestion/:path*",
     "/api/admin-it/:path*",
     "/((?!_next/static|_next/image|favicon.ico|logo.svg).*)",
   ],
