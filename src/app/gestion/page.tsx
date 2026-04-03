@@ -312,15 +312,16 @@ export default function GestionPage() {
     const newVal = settings[key as keyof SiteSettings] === "true" ? "false" : "true";
     setSettings(prev => ({ ...prev, [key]: newVal }));
     const res = await fetch("/api/gestion/settings", {
-      method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ [key]: newVal }),
+      method: "PUT",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [key]: newVal }),
     });
     if (!res.ok) {
-      // Annule l'optimisme si echec (session expirée, etc.)
       setSettings(prev => ({ ...prev, [key]: newVal === "true" ? "false" : "true" }));
-      alert("Session expirée — reconnectez-vous.");
+      if (res.status === 401) logout();
     } else {
-      // Re-charge depuis la DB pour confirmer
-      const data = await fetch("/api/gestion/settings").then(r => r.json());
+      const data = await fetch("/api/gestion/settings", { credentials: "same-origin" }).then(r => r.json());
       setSettings(data);
     }
   };
@@ -417,6 +418,15 @@ export default function GestionPage() {
               {NAV.find(n => n.id === tab)?.label}
             </h1>
           </div>
+          <button
+            onClick={logout}
+            className="flex items-center gap-1.5 text-xs font-semibold text-gray-400 hover:text-red-500 border border-gray-200 hover:border-red-200 px-3 py-1.5 rounded-lg transition-all"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-3.5 h-3.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+            </svg>
+            Déconnexion
+          </button>
           <Link href="/" className="text-xs text-gray-400 hover:text-gray-600">← Voir le site</Link>
         </header>
 
