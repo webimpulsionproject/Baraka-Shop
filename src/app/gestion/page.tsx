@@ -151,7 +151,7 @@ function LoginScreen({ onLogin }: { onLogin: (name: string) => void }) {
         </form>
 
         <div className="flex items-center justify-between mt-6 pt-5 border-t border-gray-100">
-          <p className="text-xs text-gray-300">Session de 30 minutes</p>
+          <p className="text-xs text-gray-300">Session de 8 heures</p>
           <Link href="/" className="text-xs text-gray-400 hover:text-[#1B5E20] transition-colors">← Retour au site</Link>
         </div>
       </div>
@@ -159,7 +159,7 @@ function LoginScreen({ onLogin }: { onLogin: (name: string) => void }) {
   );
 }
 
-const TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
+const TIMEOUT_MS = 8 * 60 * 60 * 1000; // 8 heures (aligne avec le cookie)
 
 export default function GestionPage() {
   const [authed, setAuthed]           = useState(false);
@@ -183,6 +183,7 @@ export default function GestionPage() {
   const [promoForm, setPromoForm]           = useState({ code: "", type: "percent" as "percent" | "fixed", value: "" });
   const [selectedMsg, setSelectedMsg]       = useState<DBMessage | null>(null);
   const [newAdmin, setNewAdmin]             = useState({ username: "", password: "" });
+  const [toast, setToast]                   = useState<{ msg: string; ok: boolean } | null>(null);
 
   // ── Vérifier la session au montage (persist après refresh) ───────────────
   useEffect(() => {
@@ -308,6 +309,11 @@ export default function GestionPage() {
     setSelectedMsg(null); await load();
   };
 
+  const showToast = (msg: string, ok = true) => {
+    setToast({ msg, ok });
+    setTimeout(() => setToast(null), 3000);
+  };
+
   const toggleSetting = async (key: string) => {
     const newVal = settings[key as keyof SiteSettings] === "true" ? "false" : "true";
     setSettings(prev => ({ ...prev, [key]: newVal }));
@@ -320,9 +326,12 @@ export default function GestionPage() {
     if (!res.ok) {
       setSettings(prev => ({ ...prev, [key]: newVal === "true" ? "false" : "true" }));
       if (res.status === 401) logout();
+      else showToast("Erreur lors de la sauvegarde", false);
     } else {
       const data = await fetch("/api/gestion/settings", { credentials: "same-origin" }).then(r => r.json());
       setSettings(data);
+      const label = key === "mode_aid" ? "Mode Aïd" : "Mode Ramadan";
+      showToast(`${label} ${newVal === "true" ? "activé" : "désactivé"} — rechargez le site pour voir les changements`);
     }
   };
 
@@ -377,18 +386,39 @@ export default function GestionPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
-      <aside className="w-44 bg-[#1B5E20] flex flex-col flex-shrink-0 hidden lg:flex">
-        <div className="px-4 py-5 border-b border-white/10">
-          <p className="text-white font-semibold text-sm">Gestion Baraka</p>
-          <p className="text-white/40 text-xs mt-0.5">{displayName}</p>
+      <aside className="w-52 bg-[#1A2E1A] flex flex-col flex-shrink-0 hidden lg:flex">
+        {/* Logo / titre */}
+        <div className="px-5 py-5 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.jpg" alt="Baraka" className="w-8 h-8 rounded-lg object-cover flex-shrink-0" />
+            <div>
+              <p className="text-white font-semibold text-sm leading-tight">Baraka Shop</p>
+              <p className="text-white/40 text-[11px] mt-0.5">Gestion</p>
+            </div>
+          </div>
         </div>
-        <nav className="flex-1 py-3 px-2">
+
+        {/* Utilisateur connecté */}
+        <div className="px-4 py-3 border-b border-white/8">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-full bg-[#1B5E20] flex items-center justify-center flex-shrink-0">
+              <span className="text-white text-[11px] font-bold">{displayName.charAt(0).toUpperCase()}</span>
+            </div>
+            <div className="min-w-0">
+              <p className="text-white/80 text-xs font-medium truncate">{displayName}</p>
+              <p className="text-white/30 text-[10px]">Connecté</p>
+            </div>
+          </div>
+        </div>
+
+        <nav className="flex-1 py-3 px-2.5">
           {NAV.map(item => (
             <button key={item.id} onClick={() => setTab(item.id)}
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm mb-0.5 transition-all ${
-                tab === item.id ? "bg-white/15 text-white font-medium" : "text-white/60 hover:bg-white/8 hover:text-white/90"
+                tab === item.id ? "bg-white/15 text-white font-medium" : "text-white/55 hover:bg-white/8 hover:text-white/85"
               }`}>
-              {item.label}
+              <span>{item.label}</span>
               {item.id === "commandes" && pending > 0 && (
                 <span className="bg-[#E64A19] text-white text-[10px] font-bold rounded-full h-4 px-1.5 flex items-center">{pending}</span>
               )}
@@ -398,37 +428,71 @@ export default function GestionPage() {
             </button>
           ))}
         </nav>
-        <div className="p-3 border-t border-white/10">
-          <button onClick={logout} className="w-full text-xs text-white/40 hover:text-white/70 py-2 transition-colors text-left px-1">Déconnexion →</button>
+
+        {/* Bas de sidebar */}
+        <div className="p-3 border-t border-white/10 space-y-1">
+          <Link href="/" className="flex items-center gap-2 text-xs text-white/40 hover:text-white/70 px-3 py-2 rounded-lg hover:bg-white/5 transition-all">
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Voir le site
+          </Link>
+          <button onClick={logout} className="w-full flex items-center gap-2 text-xs text-white/40 hover:text-red-400 px-3 py-2 rounded-lg hover:bg-red-900/20 transition-all">
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+            </svg>
+            Déconnexion
+          </button>
         </div>
       </aside>
 
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="bg-white border-b border-gray-100 px-6 py-3.5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {/* Mobile nav */}
+        <header className="bg-white border-b border-gray-100 px-6 py-3.5 flex items-center justify-between gap-4">
+          {/* Titre / nav mobile */}
+          <div className="flex items-center gap-3 min-w-0">
             <div className="lg:hidden">
               <select value={tab} onChange={e => setTab(e.target.value as Tab)}
                 className="text-sm font-semibold text-gray-900 bg-transparent border-0 outline-none cursor-pointer">
                 {NAV.map(n => <option key={n.id} value={n.id}>{n.label}</option>)}
               </select>
             </div>
-            <h1 className="font-semibold text-gray-900 hidden lg:block">
+            <h1 className="font-semibold text-gray-900 text-sm hidden lg:block">
               {NAV.find(n => n.id === tab)?.label}
             </h1>
           </div>
-          <button
-            onClick={logout}
-            className="flex items-center gap-1.5 text-xs font-semibold text-gray-400 hover:text-red-500 border border-gray-200 hover:border-red-200 px-3 py-1.5 rounded-lg transition-all"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-3.5 h-3.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-            </svg>
-            Déconnexion
-          </button>
-          <Link href="/" className="text-xs text-gray-400 hover:text-gray-600">← Voir le site</Link>
+
+          {/* Actions droite */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Link href="/"
+              className="hidden sm:flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-700 border border-gray-200 hover:border-gray-300 px-3 py-1.5 rounded-lg transition-all">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+              </svg>
+              Voir le site
+            </Link>
+            <button onClick={logout}
+              className="flex items-center gap-1.5 text-xs font-medium text-red-500 hover:text-red-600 bg-red-50 hover:bg-red-100 border border-red-100 hover:border-red-200 px-3 py-1.5 rounded-lg transition-all">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-3.5 h-3.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+              </svg>
+              Déconnexion
+            </button>
+          </div>
         </header>
+
+        {/* Toast */}
+        {toast && (
+          <div className={`fixed bottom-5 right-5 z-50 flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-sm font-medium transition-all ${
+            toast.ok ? "bg-[#1B5E20] text-white" : "bg-red-600 text-white"
+          }`}>
+            {toast.ok
+              ? <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+              : <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
+            }
+            {toast.msg}
+          </div>
+        )}
 
         <main className="flex-1 p-5 overflow-auto">
 
@@ -438,23 +502,32 @@ export default function GestionPage() {
               {/* Modes */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
-                  { key: "mode_aid",     label: "Mode Aïd el-Adha", desc: "Active les bannières et produits spéciaux Aïd", emoji: "🐑" },
-                  { key: "mode_ramadan", label: "Mode Ramadan",      desc: "Active les promotions et bannières du Ramadan", emoji: "🌙" },
-                ].map(({ key, label, desc, emoji }) => {
+                  { key: "mode_aid",     label: "Mode Aïd el-Adha", desc: "Active bannières, packs mouton et messages spéciaux Aïd sur tout le site.", color: "#8B4513" },
+                  { key: "mode_ramadan", label: "Mode Ramadan",      desc: "Active les promotions Ramadan et le bandeau bleu nuit en haut du site.", color: "#1B3A6B" },
+                ].map(({ key, label, desc, color }) => {
                   const on = settings[key as keyof SiteSettings] === "true";
                   return (
-                    <div key={key} className={`bg-white rounded-xl p-5 border-2 transition-all ${on ? "border-[#1B5E20]/40" : "border-gray-100"}`}>
-                      <div className="flex items-center justify-between mb-1">
-                        <div className="flex items-center gap-2">
-                          <span>{emoji}</span>
-                          <p className="font-semibold text-gray-900 text-sm">{label}</p>
+                    <div key={key} className={`bg-white rounded-xl p-5 border-2 transition-all ${on ? "border-[#1B5E20]/50 shadow-sm" : "border-gray-100"}`}>
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: on ? color : "#F3F4F6" }}>
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke={on ? "#fff" : "#9CA3AF"} strokeWidth={1.8}>
+                              {key === "mode_aid"
+                                ? <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28z" />
+                                : <><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></>
+                              }
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="font-semibold text-gray-900 text-sm">{label}</p>
+                            <p className={`text-[11px] font-medium mt-0.5 ${on ? "text-[#1B5E20]" : "text-gray-300"}`}>
+                              {on ? "Actif sur le site" : "Inactif"}
+                            </p>
+                          </div>
                         </div>
                         <Toggle on={on} onChange={() => toggleSetting(key)} />
                       </div>
-                      <p className="text-xs text-gray-400 ml-6">{desc}</p>
-                      <p className={`text-xs font-medium mt-2 ml-6 ${on ? "text-[#1B5E20]" : "text-gray-300"}`}>
-                        {on ? "Activé — visible sur le site" : "Désactivé"}
-                      </p>
+                      <p className="text-xs text-gray-400 leading-relaxed">{desc}</p>
                     </div>
                   );
                 })}
