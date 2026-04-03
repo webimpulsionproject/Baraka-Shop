@@ -109,3 +109,16 @@ model SiteSettings {
   value       String
   updatedAt   DateTime @updatedAt
 }
+
+model LoginLog {
+  id        Int      @id @default(autoincrement())
+  type      String   // "gestion" | "it"
+  username  String?  // null pour les tentatives IT
+  success   Boolean
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([success])
+}

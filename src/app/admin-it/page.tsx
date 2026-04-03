@@ -6,7 +6,24 @@ import Link from "next/link";
 // ── Types ─────────────────────────────────────────────────────────────────────
 type CheckStatus  = "ok" | "warning" | "error";
 type GlobalStatus = "healthy" | "warning" | "degraded" | "loading";
-type Tab = "systeme" | "securite" | "base-de-donnees" | "api" | "build";
+type Tab = "systeme" | "securite" | "base-de-donnees" | "api" | "build" | "logs";
+
+interface LoginLogEntry {
+  id: number;
+  type: string;
+  username: string | null;
+  success: boolean;
+  ip: string | null;
+  userAgent: string | null;
+  createdAt: string;
+}
+interface LogStats {
+  total: number;
+  failed: number;
+  success: number;
+  suspiciousIps: { ip: string | null; _count: { id: number } }[];
+}
+interface LogsData { logs: LoginLogEntry[]; stats: LogStats; }
 
 interface Check {
   status: CheckStatus;
@@ -28,6 +45,7 @@ const NAV: { id: Tab; label: string }[] = [
   { id: "base-de-donnees",  label: "Base de données" },
   { id: "api",              label: "API & Routes"    },
   { id: "build",            label: "Build & Env"     },
+  { id: "logs",             label: "Logs connexion"  },
 ];
 
 const API_ROUTES = [
@@ -181,6 +199,7 @@ export default function ITPage() {
   const [checking, setChecking]     = useState(true);
   const [tab, setTab]               = useState<Tab>("systeme");
   const [health, setHealth]         = useState<HealthData | null>(null);
+  const [logsData, setLogsData]     = useState<LogsData | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
   const [uptime, setUptime]         = useState(0); // secondes depuis chargement
@@ -202,8 +221,12 @@ export default function ITPage() {
   const fetchHealth = useCallback(async () => {
     setRefreshing(true);
     try {
-      const res = await fetch("/api/admin-it/health");
-      if (res.ok) { setHealth(await res.json()); setLastRefresh(new Date()); }
+      const [healthRes, logsRes] = await Promise.all([
+        fetch("/api/admin-it/health"),
+        fetch("/api/admin-it/logs?limit=100"),
+      ]);
+      if (healthRes.ok) { setHealth(await healthRes.json()); setLastRefresh(new Date()); }
+      if (logsRes.ok)   { setLogsData(await logsRes.json()); }
     } finally { setRefreshing(false); }
   }, []);
 
@@ -296,12 +319,17 @@ export default function ITPage() {
           <nav className="space-y-0.5">
             {NAV.map(n => (
               <button key={n.id} onClick={() => setTab(n.id)}
-                className={`w-full text-left px-3 py-2.5 rounded-lg text-xs transition-all ${
+                className={`w-full text-left px-3 py-2.5 rounded-lg text-xs transition-all flex items-center justify-between ${
                   tab === n.id
                     ? "bg-blue-600/15 text-blue-400 border border-blue-500/25"
                     : "text-slate-500 hover:bg-slate-800/60 hover:text-slate-300"
                 }`}>
-                {n.label}
+                <span>{n.label}</span>
+                {n.id === "logs" && (logsData?.stats.failed ?? 0) > 0 && (
+                  <span className="bg-red-500/20 text-red-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-red-500/25">
+                    {logsData!.stats.failed}
+                  </span>
+                )}
               </button>
             ))}
           </nav>
@@ -618,6 +646,104 @@ export default function ITPage() {
                 <p className="text-[11px] text-slate-700 mt-3">
                   ⚠ Upstash Redis non configuré — rate limiting en mémoire (suffisant pour trafic faible)
                 </p>
+              </div>
+            </div>
+          )}
+
+          {/* ── Logs connexion ── */}
+          {tab === "logs" && (
+            <div className="space-y-5">
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { label: "Total",    val: logsData?.stats.total   ?? "—", color: "text-slate-200" },
+                  { label: "Réussies", val: logsData?.stats.success ?? "—", color: "text-emerald-400" },
+                  { label: "Échouées", val: logsData?.stats.failed  ?? "—", color: logsData?.stats.failed ? "text-red-400" : "text-slate-500" },
+                ].map(k => (
+                  <div key={k.label} className="bg-slate-900/60 border border-slate-800 rounded-xl p-4">
+                    <p className={`text-2xl font-bold font-mono ${k.color}`}>{String(k.val)}</p>
+                    <p className="text-[10px] text-slate-600 mt-1 uppercase tracking-wider">{k.label}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* IPs suspectes */}
+              {(logsData?.stats.suspiciousIps.length ?? 0) > 0 && (
+                <div className="bg-red-900/10 border border-red-800/30 rounded-xl p-5">
+                  <p className="text-sm font-semibold text-red-400 mb-3">IPs avec tentatives échouées</p>
+                  <div className="space-y-2">
+                    {logsData!.stats.suspiciousIps.map((entry, i) => (
+                      <div key={i} className="flex items-center justify-between">
+                        <span className="text-xs font-mono text-slate-300">{entry.ip ?? "unknown"}</span>
+                        <span className="text-xs font-bold text-red-400 bg-red-500/10 border border-red-500/20 px-2 py-0.5 rounded-md">
+                          {entry._count.id} échec{entry._count.id > 1 ? "s" : ""}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Journal */}
+              <div className="bg-slate-900/60 border border-slate-800 rounded-xl overflow-hidden">
+                <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
+                  <p className="text-sm font-semibold text-white">Journal des connexions</p>
+                  <p className="text-xs text-slate-600">100 dernières entrées</p>
+                </div>
+                {!logsData || logsData.logs.length === 0 ? (
+                  <p className="px-5 py-8 text-center text-slate-700 text-sm">Aucune entrée pour l&apos;instant.</p>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-xs">
+                      <thead className="border-b border-slate-800">
+                        <tr className="text-slate-600 uppercase tracking-wider">
+                          <th className="px-5 py-3 text-left font-medium">Date / Heure</th>
+                          <th className="px-4 py-3 text-center font-medium">Type</th>
+                          <th className="px-4 py-3 text-left font-medium hidden sm:table-cell">Utilisateur</th>
+                          <th className="px-4 py-3 text-left font-medium">IP</th>
+                          <th className="px-4 py-3 text-center font-medium">Résultat</th>
+                          <th className="px-4 py-3 text-left font-medium hidden lg:table-cell">User-Agent</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60">
+                        {logsData.logs.map(log => (
+                          <tr key={log.id} className={`hover:bg-slate-800/20 transition-colors ${!log.success ? "bg-red-900/5" : ""}`}>
+                            <td className="px-5 py-3 font-mono text-slate-400 whitespace-nowrap">
+                              {new Date(log.createdAt).toLocaleString("fr-FR", {
+                                day: "2-digit", month: "2-digit",
+                                hour: "2-digit", minute: "2-digit", second: "2-digit"
+                              })}
+                            </td>
+                            <td className="px-4 py-3 text-center">
+                              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                                log.type === "gestion"
+                                  ? "bg-[#1B5E20]/20 text-emerald-400 border-emerald-800/40"
+                                  : "bg-blue-600/15 text-blue-400 border-blue-500/25"
+                              }`}>
+                                {log.type === "gestion" ? "Gestion" : "IT"}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 font-mono text-slate-400 hidden sm:table-cell">
+                              {log.username ?? <span className="text-slate-700">—</span>}
+                            </td>
+                            <td className="px-4 py-3 font-mono text-slate-400">
+                              {log.ip ?? <span className="text-slate-700">—</span>}
+                            </td>
+                            <td className="px-4 py-3 text-center">
+                              {log.success
+                                ? <span className="text-emerald-500 font-bold">✓</span>
+                                : <span className="text-red-500 font-bold">✗</span>}
+                            </td>
+                            <td className="px-4 py-3 text-slate-700 max-w-[200px] truncate hidden lg:table-cell text-[10px]">
+                              {log.userAgent ?? "—"}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             </div>
           )}
