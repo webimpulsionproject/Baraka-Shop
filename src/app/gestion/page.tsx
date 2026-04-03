@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { categories } from "@/lib/data";
 import type { ProductCategory } from "@/lib/data";
 import Link from "next/link";
@@ -92,38 +92,81 @@ function LoginScreen({ onLogin }: { onLogin: (name: string) => void }) {
   return (
     <div className="min-h-screen bg-[#1B5E20] flex items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm">
-        <div className="text-center mb-7">
-          <div className="w-12 h-12 bg-[#1B5E20] rounded-xl flex items-center justify-center mx-auto mb-4">
-            <span className="text-white text-xl">🥩</span>
-          </div>
+        {/* Logo */}
+        <div className="text-center mb-8">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.jpg" alt="Baraka Shop" className="w-20 h-20 rounded-2xl object-cover mx-auto mb-4 shadow-md" />
           <h1 className="text-xl font-bold text-gray-900">Espace de gestion</h1>
-          <p className="text-gray-400 text-sm mt-1">Baraka Shop</p>
+          <p className="text-gray-400 text-sm mt-1">Baraka Shop — Accès privé</p>
         </div>
-        {err && <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-lg mb-4 text-center">{err}</div>}
-        <form onSubmit={submit} className="space-y-3">
-          <input type="text" placeholder="Nom d'utilisateur" value={username}
-            onChange={(e) => { setUsername(e.target.value); setErr(""); }}
-            className="input-field" autoComplete="username" required />
-          <input type="password" placeholder="Mot de passe" value={pw}
-            onChange={(e) => { setPw(e.target.value); setErr(""); }}
-            className="input-field" autoComplete="current-password" required />
+
+        {err && (
+          <div className="flex items-center gap-2 bg-red-50 border border-red-100 text-red-700 text-sm px-4 py-3 rounded-xl mb-5">
+            <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {err}
+          </div>
+        )}
+
+        <form onSubmit={submit} className="space-y-4">
+          <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">Nom d&apos;utilisateur</label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </span>
+              <input type="text" placeholder="leboucher" value={username}
+                onChange={(e) => { setUsername(e.target.value); setErr(""); }}
+                className="input-field pl-9" autoComplete="username" required />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">Mot de passe</label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </span>
+              <input type="password" placeholder="••••••••" value={pw}
+                onChange={(e) => { setPw(e.target.value); setErr(""); }}
+                className="input-field pl-9" autoComplete="current-password" required />
+            </div>
+          </div>
           <button type="submit" disabled={loading}
-            className="w-full bg-[#1B5E20] text-white py-3 rounded-xl font-medium text-sm hover:bg-[#145214] transition-colors disabled:opacity-60">
-            {loading ? "Connexion..." : "Se connecter"}
+            className="w-full bg-[#1B5E20] text-white py-3.5 rounded-xl font-semibold text-sm hover:bg-[#145214] transition-colors disabled:opacity-60 flex items-center justify-center gap-2 mt-2">
+            {loading ? (
+              <>
+                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                </svg>
+                Connexion...
+              </>
+            ) : "Se connecter"}
           </button>
         </form>
-        <p className="text-center text-xs text-gray-300 mt-5">
-          <Link href="/" className="hover:text-gray-500">← Retour au site</Link>
-        </p>
+
+        <div className="flex items-center justify-between mt-6 pt-5 border-t border-gray-100">
+          <p className="text-xs text-gray-300">Session de 30 minutes</p>
+          <Link href="/" className="text-xs text-gray-400 hover:text-[#1B5E20] transition-colors">← Retour au site</Link>
+        </div>
       </div>
     </div>
   );
 }
 
+const TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
+
 export default function GestionPage() {
   const [authed, setAuthed]           = useState(false);
+  const [checking, setChecking]       = useState(true); // vérifie la session au montage
   const [displayName, setDisplayName] = useState("");
   const [tab, setTab]                 = useState<Tab>("tableau-de-bord");
+  const timeoutRef                    = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [prods, setProds]             = useState<DBProduct[]>([]);
   const [orders, setOrders]           = useState<DBOrder[]>([]);
   const [codes, setCodes]             = useState<DBPromoCode[]>([]);
@@ -140,6 +183,36 @@ export default function GestionPage() {
   const [promoForm, setPromoForm]           = useState({ code: "", type: "percent" as "percent" | "fixed", value: "" });
   const [selectedMsg, setSelectedMsg]       = useState<DBMessage | null>(null);
   const [newAdmin, setNewAdmin]             = useState({ username: "", password: "" });
+
+  // ── Vérifier la session au montage (persist après refresh) ───────────────
+  useEffect(() => {
+    fetch("/api/gestion/me")
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.ok) { setDisplayName(data.displayName); setAuthed(true); }
+      })
+      .finally(() => setChecking(false));
+  }, []);
+
+  // ── Timeout 30 min d'inactivité ───────────────────────────────────────────
+  const resetTimeout = useCallback(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(async () => {
+      await fetch("/api/gestion/login", { method: "DELETE" });
+      setAuthed(false);
+    }, TIMEOUT_MS);
+  }, []);
+
+  useEffect(() => {
+    if (!authed) return;
+    resetTimeout();
+    const events = ["mousemove", "keydown", "click", "scroll"];
+    events.forEach(e => window.addEventListener(e, resetTimeout));
+    return () => {
+      events.forEach(e => window.removeEventListener(e, resetTimeout));
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [authed, resetTimeout]);
 
   const load = useCallback(async () => {
     const [p, o, c, a, m, s] = await Promise.all([
@@ -280,7 +353,16 @@ export default function GestionPage() {
   }
   const clients = Array.from(clientsMap.values()).sort((a, b) => b.total - a.total);
 
-  if (!authed) return <LoginScreen onLogin={(n) => { setDisplayName(n); setAuthed(true); }} />;
+  if (checking) return (
+    <div className="min-h-screen bg-[#1B5E20] flex items-center justify-center">
+      <svg className="animate-spin w-8 h-8 text-white/50" fill="none" viewBox="0 0 24 24">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+      </svg>
+    </div>
+  );
+
+  if (!authed) return <LoginScreen onLogin={(n) => { setDisplayName(n); setAuthed(true); resetTimeout(); }} />;
 
   return (
     <div className="min-h-screen bg-gray-50 flex">

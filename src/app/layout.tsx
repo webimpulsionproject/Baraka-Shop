@@ -12,6 +12,10 @@ const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans", display
 export const metadata: Metadata = {
   title: "Baraka Shop — Boucherie Halal Premium | Mons-en-Barœul",
   description: "Boucherie halal certifiée, traiteur et épicerie vrac à Mons-en-Barœul. Click & Collect en 30 min. Viandes fraîches du jour.",
+  icons: {
+    icon: "/logo.jpg",
+    apple: "/logo.jpg",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
