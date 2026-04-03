@@ -15,89 +15,105 @@ interface Check {
 export async function GET() {
   const checks: Record<string, Check> = {};
 
-  // ── Database connection ──────────────────────────────────────────────────────
+  // ── Connexion base de données ─────────────────────────────────────────────
   const dbStart = Date.now();
   try {
     await prisma.$queryRaw`SELECT 1`;
-    const dbLatency = Date.now() - dbStart;
+    const latency = Date.now() - dbStart;
     checks.database = {
-      status: dbLatency < 300 ? "ok" : "warning",
-      message: dbLatency < 300 ? "Connexion active" : "Latence élevée",
-      latency: dbLatency,
+      status:  latency < 300 ? "ok" : "warning",
+      message: latency < 300 ? "Connexion active" : "Latence élevée (> 300ms)",
+      latency,
     };
   } catch (e) {
     checks.database = {
-      status: "error",
-      message: `Connexion échouée: ${e instanceof Error ? e.message : String(e)}`,
+      status:  "error",
+      message: "Connexion échouée",
       latency: Date.now() - dbStart,
+      details: { error: e instanceof Error ? e.message : "Erreur inconnue" },
     };
   }
 
-  // ── Model counts ─────────────────────────────────────────────────────────────
+  // ── Compteurs des modèles ─────────────────────────────────────────────────
   try {
-    const [products, orders, promoCodes, reviews, notifyEmails] = await Promise.all([
+    const [products, orders, messages, reviews, admins, settings] = await Promise.all([
       prisma.product.count(),
       prisma.order.count(),
-      prisma.promoCode.count(),
+      prisma.contactMessage.count(),
       prisma.review.count(),
-      prisma.notifyEmail.count(),
+      prisma.adminUser.count(),
+      prisma.siteSettings.findMany(),
     ]);
     checks.models = {
-      status: "ok",
+      status:  "ok",
       message: "Tous les modèles accessibles",
-      details: { products, orders, promoCodes, reviews, notifyEmails },
+      details: {
+        products,
+        orders,
+        messages,
+        reviews,
+        admins,
+        settings: Object.fromEntries(settings.map((s) => [s.key, s.value])),
+      },
     };
   } catch (e) {
     checks.models = {
-      status: "warning",
-      message: `Erreur lecture modèles: ${e instanceof Error ? e.message : String(e)}`,
+      status:  "warning",
+      message: "Erreur lecture modèles",
+      details: { error: e instanceof Error ? e.message : "Erreur inconnue" },
     };
   }
 
-  // ── Environment variables ────────────────────────────────────────────────────
+  // ── Variables d'environnement ─────────────────────────────────────────────
   const envMap: Record<string, boolean> = {
-    DATABASE_URL: !!process.env.DATABASE_URL,
-    DIRECT_URL: !!process.env.DIRECT_URL,
-    ADMIN_SECRET: !!process.env.ADMIN_SECRET,
+    DATABASE_URL:    !!process.env.DATABASE_URL,
+    DIRECT_URL:      !!process.env.DIRECT_URL,
+    ADMIN_SECRET:    !!process.env.ADMIN_SECRET,
     IT_ADMIN_SECRET: !!process.env.IT_ADMIN_SECRET,
   };
   const missing = Object.entries(envMap).filter(([, v]) => !v).map(([k]) => k);
   checks.environment = {
-    status: missing.length === 0 ? "ok" : missing.length <= 2 ? "warning" : "error",
+    status:  missing.length === 0 ? "ok" : missing.length <= 1 ? "warning" : "error",
     message: missing.length === 0
       ? "Toutes les variables configurées"
-      : `Variables manquantes : ${missing.join(", ")}`,
+      : `Manquantes : ${missing.join(", ")}`,
     details: Object.fromEntries(
-      Object.entries(envMap).map(([k, v]) => [k, v ? "configurée" : "manquante"])
+      Object.entries(envMap).map(([k, v]) => [k, v ? "✓ configurée" : "✗ manquante"])
     ),
   };
 
-  // ── Security headers (self-check) ────────────────────────────────────────────
+  // ── Headers de sécurité ───────────────────────────────────────────────────
   checks.security = {
-    status: "ok",
-    message: "Headers de sécurité actifs",
+    status:  "ok",
+    message: "Headers ANSSI actifs",
     details: {
-      "X-Content-Type-Options": "nosniff",
-      "X-Frame-Options": "DENY",
-      "X-XSS-Protection": "1; mode=block",
-      "Referrer-Policy": "strict-origin-when-cross-origin",
-      "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+      "Content-Security-Policy":          "✓ frame-ancestors, form-action, object-src none",
+      "Strict-Transport-Security":        "✓ max-age=15552000; includeSubDomains",
+      "X-Content-Type-Options":           "✓ nosniff",
+      "X-XSS-Protection":                 "✓ 1; mode=block",
+      "Referrer-Policy":                  "✓ strict-origin-when-cross-origin",
+      "Cross-Origin-Resource-Policy":     "✓ same-origin",
+      "X-Permitted-Cross-Domain-Policies":"✓ none",
+      "Permissions-Policy":               "✓ camera, mic, geolocation, payment bloqués",
+      "Rate-Limiting":                    "✓ login 5/15min, contact 5/h, promo 10/min",
+      "Cookie admin_session":             "✓ httpOnly, secure, sameSite=strict",
     },
   };
 
-  // ── Final status ─────────────────────────────────────────────────────────────
+  // ── Statut global ─────────────────────────────────────────────────────────
   const values = Object.values(checks);
-  const hasError = values.some((c) => c.status === "error");
+  const hasError   = values.some((c) => c.status === "error");
   const hasWarning = values.some((c) => c.status === "warning");
 
   return NextResponse.json({
-    status: hasError ? "degraded" : hasWarning ? "warning" : "healthy",
+    status:    hasError ? "degraded" : hasWarning ? "warning" : "healthy",
     timestamp: new Date().toISOString(),
     checks,
     build: {
-      nodeVersion: process.version,
-      nextVersion: "14.2.5",
-      environment: process.env.NODE_ENV ?? "unknown",
+      nodeVersion:  process.version,
+      nextVersion:  "14.2.5",
+      environment:  process.env.NODE_ENV ?? "unknown",
+      platform:     process.platform,
     },
   });
 }

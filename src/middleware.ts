@@ -135,7 +135,7 @@ function checkAuthAndReturn(
 
   // ── Protection IT Admin ──────────────────────────────────────────────────
   const isITAdminPage = pathname.startsWith("/admin-it");
-  const isITAdminAPI  = pathname.startsWith("/api/admin-it");
+  const isITAdminAPI  = pathname.startsWith("/api/admin-it") && pathname !== "/api/admin-it/login";
 
   if (isITAdminPage || isITAdminAPI) {
     const itSecret = process.env.IT_ADMIN_SECRET;
@@ -144,8 +144,10 @@ function checkAuthAndReturn(
       return response;
     }
     if (!isAuthorized(itSecret, "it_admin_session")) {
-      if (isITAdminPage) return NextResponse.redirect(new URL("/connexion?redirect=it", request.url));
-      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+      // La page gère son propre écran de login (comme /gestion)
+      if (isITAdminAPI) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+      // Pour la page, laisser passer — le composant React gère l'état non-authentifié
+      return response;
     }
   }
 
