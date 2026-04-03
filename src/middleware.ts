@@ -28,18 +28,17 @@ export function middleware(request: NextRequest) {
   }
 
   // ── Route Boucher Admin (/admin) ───────────────────────────────────────────
-  const isAdminPage = pathname.startsWith("/admin") && !pathname.startsWith("/admin-it");
-  const isAdminAPI  = (pathname === "/api/commandes" && request.method === "GET") ||
-                      (pathname.startsWith("/api/admin/") && pathname !== "/api/admin/login");
+  // La page /admin gère son propre login — seules les APIs sont protégées ici
+  const isAdminAPI = (pathname === "/api/commandes" && request.method === "GET") ||
+                     (pathname.startsWith("/api/admin/") && pathname !== "/api/admin/login");
 
-  if (isAdminPage || isAdminAPI) {
+  if (isAdminAPI) {
     const adminSecret = process.env.ADMIN_SECRET;
     if (!adminSecret) {
-      console.warn("[SECURITY] ADMIN_SECRET non configuré — /admin non protégé !");
+      console.warn("[SECURITY] ADMIN_SECRET non configuré — APIs admin non protégées !");
       return response;
     }
     if (!isAuthorized(adminSecret, "admin_session")) {
-      if (isAdminPage) return NextResponse.redirect(new URL("/connexion?redirect=admin", request.url));
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
     }
   }
