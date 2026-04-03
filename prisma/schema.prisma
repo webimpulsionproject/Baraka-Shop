@@ -81,3 +81,13 @@ model NotifyEmail {
   email     String   @unique
   createdAt DateTime @default(now())
 }
+
+model AdminUser {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String
+  displayName  String
+  role         String   @default("boucher")
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+}

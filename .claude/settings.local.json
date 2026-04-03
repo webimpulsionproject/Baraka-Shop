@@ -11,7 +11,17 @@
       "WebFetch(domain:paisible.ai)",
       "WebFetch(domain:www.pagesjaunes.fr)",
       "WebFetch(domain:www.bottin.fr)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(npm install:*)",
+      "Bash(npx next:*)",
+      "Bash(npx prisma:*)",
+      "Bash(cd:*)",
+      "Bash(npm run:*)",
+      "Bash(find /c/Users/Beyou/Documents/Business/webimpulsionbusiness/Baraka-Shop -not -path */node_modules/* -not -path */.next/* -not -path */.git/* -type f)",
+      "Bash(find C:/Users/Beyou/Documents/Business/webimpulsionbusiness/Baraka-Shop -name *.svg -o -name *.png -o -name *.jpg -o -name *.webp -o -name *.ico)",
+      "Bash(npm test:*)",
+      "Bash(node -e \"const z = require\\(''''zod''''\\); console.log\\(z.ZodError.prototype\\)\")",
+      "Bash(\"C:/Users/Beyou/Documents/Business/webimpulsionbusiness/Baraka-Shop/.eslintrc.json\")"
     ]
   }
 }

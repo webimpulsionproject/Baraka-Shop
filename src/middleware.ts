@@ -29,7 +29,8 @@ export function middleware(request: NextRequest) {
 
   // ── Route Boucher Admin (/admin) ───────────────────────────────────────────
   const isAdminPage = pathname.startsWith("/admin") && !pathname.startsWith("/admin-it");
-  const isAdminAPI  = pathname === "/api/commandes" && request.method === "GET";
+  const isAdminAPI  = (pathname === "/api/commandes" && request.method === "GET") ||
+                      (pathname.startsWith("/api/admin/") && pathname !== "/api/admin/login");
 
   if (isAdminPage || isAdminAPI) {
     const adminSecret = process.env.ADMIN_SECRET;
@@ -67,6 +68,7 @@ export const config = {
     "/admin/:path*",
     "/admin-it/:path*",
     "/api/commandes",
+    "/api/admin/:path*",
     "/api/admin-it/:path*",
     "/((?!_next/static|_next/image|favicon.ico|logo.svg).*)",
   ],
