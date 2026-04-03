@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { prisma } from "@/lib/prisma";
 
 const ContactSchema = z.object({
   name:    z.string().min(2).max(100),
@@ -21,13 +22,14 @@ export async function POST(req: Request) {
       );
     }
 
-    // TODO: intégrer un service email (Resend, SendGrid, Nodemailer)
-    // Pour l'instant on log et on retourne success
-    console.log("[CONTACT]", {
-      from: data.data.email,
-      name: data.data.name,
-      subject: data.data.subject,
-      preview: data.data.message.slice(0, 60),
+    await prisma.contactMessage.create({
+      data: {
+        name:    data.data.name,
+        email:   data.data.email,
+        phone:   data.data.phone ?? null,
+        subject: data.data.subject ?? null,
+        message: data.data.message,
+      },
     });
 
     return NextResponse.json({ success: true }, { status: 200 });

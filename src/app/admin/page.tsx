@@ -7,7 +7,7 @@ import Logo from "@/components/Logo";
 import Link from "next/link";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
-type Tab = "dashboard" | "produits" | "commandes" | "clients" | "promotions" | "comptes";
+type Tab = "dashboard" | "produits" | "commandes" | "clients" | "promotions" | "messages" | "comptes";
 type OrderStatus = "En attente" | "En préparation" | "Prête" | "Livrée" | "Annulée";
 
 interface DBProduct {
@@ -31,6 +31,16 @@ interface DBAdmin {
   id: number; username: string; displayName: string; role: string; active: boolean; createdAt: string;
 }
 
+interface DBMessage {
+  id: number; name: string; email: string; phone: string | null;
+  subject: string | null; message: string; read: boolean; createdAt: string;
+}
+
+interface SiteSettings {
+  mode_aid: string;
+  mode_ramadan: string;
+}
+
 // ── Constantes ────────────────────────────────────────────────────────────────
 const STATUS_COLORS: Record<OrderStatus, string> = {
   "En attente":     "bg-yellow-50 text-yellow-700 border border-yellow-200",
@@ -46,6 +56,7 @@ const NAV_ITEMS: { id: Tab; label: string; icon: string }[] = [
   { id: "commandes",   label: "Commandes",   icon: "⊡" },
   { id: "clients",     label: "Clients",     icon: "◉" },
   { id: "promotions",  label: "Promotions",  icon: "◆" },
+  { id: "messages",    label: "Boîte mail",  icon: "✉" },
   { id: "comptes",     label: "Comptes",     icon: "◎" },
 ];
 
@@ -147,11 +158,14 @@ export default function AdminPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Data
-  const [prods, setProds]     = useState<DBProduct[]>([]);
-  const [orders, setOrders]   = useState<DBOrder[]>([]);
-  const [codes, setCodes]     = useState<DBPromoCode[]>([]);
-  const [admins, setAdmins]   = useState<DBAdmin[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [prods, setProds]       = useState<DBProduct[]>([]);
+  const [orders, setOrders]     = useState<DBOrder[]>([]);
+  const [codes, setCodes]       = useState<DBPromoCode[]>([]);
+  const [admins, setAdmins]     = useState<DBAdmin[]>([]);
+  const [messages, setMessages] = useState<DBMessage[]>([]);
+  const [settings, setSettings] = useState<SiteSettings>({ mode_aid: "false", mode_ramadan: "false" });
+  const [loading, setLoading]   = useState(false);
+  const [selectedMsg, setSelectedMsg] = useState<DBMessage | null>(null);
 
   // Formulaires
   const [showProdForm, setShowProdForm] = useState(false);
@@ -181,13 +195,25 @@ export default function AdminPage() {
     setAdmins(await r.json());
   }, []);
 
+  const loadMessages = useCallback(async () => {
+    const r = await fetch("/api/admin/messages");
+    setMessages(await r.json());
+  }, []);
+
+  const loadSettings = useCallback(async () => {
+    const r = await fetch("/api/admin/settings");
+    setSettings(await r.json());
+  }, []);
+
   useEffect(() => {
     if (!authed) return;
     loadProducts();
     loadOrders();
     loadCodes();
     loadAdmins();
-  }, [authed, loadProducts, loadOrders, loadCodes, loadAdmins]);
+    loadMessages();
+    loadSettings();
+  }, [authed, loadProducts, loadOrders, loadCodes, loadAdmins, loadMessages, loadSettings]);
 
   // ── Déconnexion ────────────────────────────────────────────────────────────
   const handleLogout = async () => {
@@ -294,6 +320,32 @@ export default function AdminPage() {
     await loadAdmins();
   };
 
+  // ── Messages ──────────────────────────────────────────────────────────────
+  const handleMarkRead = async (id: number, read: boolean) => {
+    await fetch(`/api/admin/messages/${id}`, {
+      method: "PATCH", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ read }),
+    });
+    await loadMessages();
+  };
+
+  const handleDeleteMessage = async (id: number) => {
+    await fetch(`/api/admin/messages/${id}`, { method: "DELETE" });
+    setSelectedMsg(null);
+    await loadMessages();
+  };
+
+  // ── Settings (Modes) ───────────────────────────────────────────────────────
+  const handleToggleSetting = async (key: string) => {
+    const newVal = settings[key as keyof SiteSettings] === "true" ? "false" : "true";
+    const updated = { ...settings, [key]: newVal };
+    setSettings(updated);
+    await fetch("/api/admin/settings", {
+      method: "PUT", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [key]: newVal }),
+    });
+  };
+
   // ── Stats ──────────────────────────────────────────────────────────────────
   const today = new Date().toDateString();
   const todayOrders = orders.filter((o) => new Date(o.createdAt).toDateString() === today);
@@ -355,6 +407,11 @@ export default function AdminPage() {
                   {pending}
                 </span>
               )}
+              {item.id === "messages" && messages.filter(m => !m.read).length > 0 && (
+                <span className="ml-auto bg-blue-500 text-white text-[10px] font-bold rounded-full h-4 px-1.5 flex items-center">
+                  {messages.filter(m => !m.read).length}
+                </span>
+              )}
             </button>
           ))}
         </nav>
@@ -412,6 +469,33 @@ export default function AdminPage() {
                     <p className="text-gray-400 text-xs mt-1">{s.label}</p>
                   </div>
                 ))}
+              </div>
+
+              {/* Modes spéciaux */}
+              <div className="col-span-2 xl:col-span-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  { key: "mode_aid",     label: "Mode Aïd",     desc: "Active les produits et bannières spéciales Aïd el-Adha", color: "#C9922A" },
+                  { key: "mode_ramadan", label: "Mode Ramadan",  desc: "Active les promotions et bannières du Ramadan",           color: "#1B5E20" },
+                ].map(({ key, label, desc, color }) => {
+                  const active = settings[key as keyof SiteSettings] === "true";
+                  return (
+                    <div key={key} className={`bg-white rounded-xl p-5 shadow-sm border-2 transition-colors ${active ? "border-[" + color + "]/40" : "border-gray-100"}`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="font-semibold text-gray-900 text-sm">{label}</p>
+                        <button
+                          onClick={() => handleToggleSetting(key)}
+                          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${active ? "bg-[#1B5E20]" : "bg-gray-200"}`}
+                        >
+                          <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${active ? "translate-x-6" : "translate-x-1"}`} />
+                        </button>
+                      </div>
+                      <p className="text-xs text-gray-400">{desc}</p>
+                      <p className={`text-xs font-semibold mt-2 ${active ? "text-[#1B5E20]" : "text-gray-400"}`}>
+                        {active ? "Activé" : "Désactivé"}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
 
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -788,6 +872,93 @@ export default function AdminPage() {
                     <button type="submit" className="btn-promo text-sm py-2.5 px-6 justify-center">+ Créer le code</button>
                   </div>
                 </form>
+              </div>
+            </div>
+          )}
+
+          {/* ── Boîte mail ── */}
+          {tab === "messages" && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 h-full">
+              {/* Liste */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden lg:col-span-1">
+                <div className="px-5 py-4 border-b border-gray-50 flex items-center justify-between">
+                  <h2 className="font-semibold text-gray-900">Messages ({messages.length})</h2>
+                  <span className="text-xs text-gray-400">{messages.filter(m => !m.read).length} non lus</span>
+                </div>
+                {messages.length === 0 ? (
+                  <p className="px-5 py-10 text-center text-gray-400 text-sm">Aucun message pour l&apos;instant.</p>
+                ) : (
+                  <div className="divide-y divide-gray-50 overflow-y-auto max-h-[60vh]">
+                    {messages.map((m) => (
+                      <button
+                        key={m.id}
+                        onClick={() => { setSelectedMsg(m); if (!m.read) handleMarkRead(m.id, true); }}
+                        className={`w-full text-left px-5 py-4 hover:bg-gray-50 transition-colors ${selectedMsg?.id === m.id ? "bg-gray-50" : ""}`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              {!m.read && <span className="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0" />}
+                              <p className={`text-sm truncate ${!m.read ? "font-semibold text-gray-900" : "text-gray-700"}`}>{m.name}</p>
+                            </div>
+                            <p className="text-xs text-gray-400 truncate mt-0.5">{m.subject || m.message.slice(0, 40)}</p>
+                          </div>
+                          <p className="text-[10px] text-gray-300 flex-shrink-0">
+                            {new Date(m.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Détail */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 lg:col-span-2">
+                {!selectedMsg ? (
+                  <div className="flex items-center justify-center h-48 text-gray-300 text-sm">
+                    Sélectionnez un message
+                  </div>
+                ) : (
+                  <div className="p-6">
+                    <div className="flex items-start justify-between mb-5">
+                      <div>
+                        <h3 className="font-playfair text-lg font-bold text-gray-900">{selectedMsg.subject || "(Sans objet)"}</h3>
+                        <div className="flex items-center gap-3 mt-1">
+                          <p className="text-sm font-medium text-gray-700">{selectedMsg.name}</p>
+                          <a href={`mailto:${selectedMsg.email}`} className="text-xs text-blue-600 hover:underline">{selectedMsg.email}</a>
+                          {selectedMsg.phone && <p className="text-xs text-gray-400">{selectedMsg.phone}</p>}
+                        </div>
+                        <p className="text-xs text-gray-300 mt-1">
+                          {new Date(selectedMsg.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleMarkRead(selectedMsg.id, !selectedMsg.read)}
+                          className="text-xs text-gray-400 hover:text-gray-600 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition-all"
+                        >
+                          {selectedMsg.read ? "Marquer non lu" : "Marquer lu"}
+                        </button>
+                        <button
+                          onClick={() => handleDeleteMessage(selectedMsg.id)}
+                          className="text-xs text-[#E64A19] hover:text-[#BF360C] border border-red-100 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-all"
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    </div>
+                    <div className="bg-gray-50 rounded-xl p-5 text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
+                      {selectedMsg.message}
+                    </div>
+                    <a
+                      href={`mailto:${selectedMsg.email}?subject=Re: ${selectedMsg.subject || "Votre message"}`}
+                      className="inline-flex items-center gap-2 mt-4 btn-primary text-sm py-2.5 px-5"
+                    >
+                      Répondre par email
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           )}
