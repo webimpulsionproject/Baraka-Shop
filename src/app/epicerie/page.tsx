@@ -8,7 +8,7 @@ import { useCart } from "@/lib/cart-context";
 const weights = ["100g", "250g", "500g", "1kg"];
 
 export default function EpiceriePage() {
-  const epicerie = products.filter((p) => p.category === "Épicerie Vrac");
+  const epicerie = products.filter((p) => p.category === "Épicerie");
   const { addItem } = useCart();
   const [selectedWeights, setSelectedWeights] = useState<Record<number, string>>({});
 

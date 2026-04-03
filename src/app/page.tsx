@@ -260,7 +260,7 @@ function Categories() {
       ),
     },
     {
-      name: "Agneau",
+      name: "Agneau & Mouton",
       sub: "Gigot, Cotelettes, Souris",
       bg: "bg-[#E64A19]",
       href: "/produits?categorie=agneau",
@@ -283,8 +283,8 @@ function Categories() {
       ),
     },
     {
-      name: "Traiteur",
-      sub: "Couscous, Tajines, BBQ",
+      name: "Traiteur & Marinés",
+      sub: "Brochettes, Tajines, BBQ",
       bg: "bg-[#C9922A]",
       href: "/produits?categorie=traiteur",
       icon: (
@@ -294,7 +294,7 @@ function Categories() {
       ),
     },
     {
-      name: "Epicerie Vrac",
+      name: "Epicerie",
       sub: "Epices, Legumineuses, Huiles",
       bg: "bg-[#2E7D32]",
       href: "/epicerie",
