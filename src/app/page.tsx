@@ -337,18 +337,19 @@ function Categories() {
 }
 
 /* ── Decoupe ──────────────────────────────────────────────────── */
-function CoupeSection() {
+function CoupeSection({ showAid }: { showAid: boolean }) {
   const options = [
     {
       icon: (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-7 h-7">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 3.75l9 9-1.5 1.5-3-3L9 15l-1.5-1.5 3.75-3.75-3-3L6 9l-1.5-1.5 3-3z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
         </svg>
       ),
       title: "Decoupe Standard",
       desc: "Incluse gratuitement avec votre achat.",
       tag: "Gratuit",
       tagClass: "bg-[#1B5E20] text-white",
+      show: true,
     },
     {
       icon: (
@@ -360,19 +361,21 @@ function CoupeSection() {
       desc: "Morceaux sur mesure selon vos preferences.",
       tag: "+2€/kg",
       tagClass: "bg-[#C9922A] text-white",
+      show: true,
     },
     {
       icon: (
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-7 h-7">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H18v-.008zm0 2.25h.008v.008H18V15z" />
         </svg>
       ),
       title: "Service Aid",
       desc: "Mouton entier, mise sous vide disponible.",
       tag: "Sur reservation",
       tagClass: "bg-[#C62828] text-white",
+      show: showAid,
     },
-  ];
+  ].filter((o) => o.show);
 
   return (
     <section className="py-20 bg-white">
@@ -516,7 +519,8 @@ function DeliverySection() {
 }
 
 /* ── Packs Aid ────────────────────────────────────────────────── */
-function AidPacks() {
+function AidPacks({ show }: { show: boolean }) {
+  if (!show) return null;
   const packs = [
     {
       name: "Pack Famille",
@@ -755,10 +759,10 @@ export default async function HomePage() {
       <TrustBar />
       <PromoWeekSection />
       <Categories />
-      <CoupeSection />
+      <CoupeSection showAid={showAid} />
       <FeaturedProducts featured={featured} />
       <DeliverySection />
-      <AidPacks />
+      <AidPacks show={showAid} />
       <ReviewsSection reviews={dbReviews} />
       <MagasinSection />
       <Footer />
