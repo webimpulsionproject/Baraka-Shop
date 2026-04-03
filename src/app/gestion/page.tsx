@@ -661,32 +661,36 @@ export default function GestionPage() {
 
                     {/* Galerie */}
                     {showImagePicker && (
-                      <div className="border border-gray-100 rounded-xl bg-gray-50/50 p-4">
+                      <div className="border border-gray-100 rounded-xl bg-gray-50/50 p-3 mt-3">
                         {(["Bœuf", "Agneau", "Volaille", "Traiteur", "Épicerie"] as const).map(cat => {
                           const imgs = PRESET_IMAGES.filter(i => i.cat === cat);
                           return (
-                            <div key={cat} className="mb-5 last:mb-0">
-                              <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-2.5">{cat}</p>
-                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                            <div key={cat} className="mb-4 last:mb-0">
+                              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">{cat}</p>
+                              <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
                                 {imgs.map(img => {
                                   const selected = prodForm.image === img.url;
                                   return (
                                     <button key={img.url} type="button"
                                       onClick={() => { setProdForm(f => ({ ...f, image: img.url })); setShowImagePicker(false); }}
-                                      className={`group relative rounded-xl overflow-hidden border-2 transition-all ${
-                                        selected ? "border-[#1B5E20] shadow-md" : "border-transparent hover:border-[#1B5E20]/40"
+                                      className={`group relative bg-white rounded-lg overflow-hidden border transition-all text-left shadow-sm ${
+                                        selected
+                                          ? "border-[#1B5E20] ring-1 ring-[#1B5E20]/30"
+                                          : "border-gray-200 hover:border-[#1B5E20]/40"
                                       }`}>
+                                      {/* Image */}
                                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                                      <img src={img.url} alt={img.label} className="w-full h-24 object-cover group-hover:scale-105 transition-transform duration-200" />
-                                      <div className={`absolute inset-0 transition-opacity ${selected ? "bg-[#1B5E20]/20" : "bg-transparent group-hover:bg-black/5"}`} />
+                                      <img src={img.url} alt={img.label} className="w-full h-14 object-cover" />
+                                      {/* Checkmark */}
                                       {selected && (
-                                        <div className="absolute top-2 right-2 w-5 h-5 bg-[#1B5E20] rounded-full flex items-center justify-center shadow">
-                                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                        <div className="absolute top-1 right-1 w-4 h-4 bg-[#1B5E20] rounded-full flex items-center justify-center shadow-sm">
+                                          <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                           </svg>
                                         </div>
                                       )}
-                                      <p className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent text-white text-[10px] font-medium px-2 py-1.5 text-center leading-tight">
+                                      {/* Label */}
+                                      <p className={`text-[9px] font-medium px-1.5 py-1 leading-tight truncate ${selected ? "text-[#1B5E20]" : "text-gray-500"}`}>
                                         {img.label}
                                       </p>
                                     </button>
