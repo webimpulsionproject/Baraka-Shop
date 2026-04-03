@@ -1,8 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
-import { Product } from "@/lib/data";
-import ProductCard from "@/components/ProductCard";
+import ProductCard, { CardProduct } from "@/components/ProductCard";
 import Footer from "@/components/Footer";
 import PromoWeekSection from "@/components/PromoWeekSection";
 
@@ -420,7 +419,7 @@ function CoupeSection({ showAid }: { showAid: boolean }) {
 }
 
 /* ── Featured Products ────────────────────────────────────────── */
-function FeaturedProducts({ featured }: { featured: Product[] }) {
+function FeaturedProducts({ featured }: { featured: CardProduct[] }) {
   return (
     <section className="py-20 bg-[#FAFAF8]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -743,7 +742,7 @@ export default async function HomePage() {
     prisma.siteSettings.findUnique({ where: { key: "mode_aid" } }),
   ]);
 
-  const featured = dbProducts.map((p) => ({ ...p, isHalal: true as const })) as unknown as Product[];
+  const featured = dbProducts as unknown as CardProduct[];
   const showAid = modeAid?.value === "true";
 
   return (

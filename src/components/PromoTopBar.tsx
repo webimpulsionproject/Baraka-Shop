@@ -25,11 +25,18 @@ export default function PromoTopBar() {
   const [barColor, setBarColor] = useState("#1A1A1A");
 
   useEffect(() => {
-    if (localStorage.getItem("promo-bar-closed") === "1") setVisible(false);
-
     fetch("/api/site-settings")
       .then((r) => r.json())
       .then((s) => {
+        const specialMode = s.mode_aid === "true" || s.mode_ramadan === "true";
+        // En mode spécial : toujours afficher (reset du flag "fermé")
+        if (specialMode) {
+          localStorage.removeItem("promo-bar-closed");
+          setVisible(true);
+        } else if (localStorage.getItem("promo-bar-closed") === "1") {
+          setVisible(false);
+          return;
+        }
         if (s.mode_aid === "true") {
           setMessages([...AID_MESSAGES, ...BASE_MESSAGES]);
           setBarColor("#8B4513");
@@ -38,7 +45,9 @@ export default function PromoTopBar() {
           setBarColor("#1B3A6B");
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        if (localStorage.getItem("promo-bar-closed") === "1") setVisible(false);
+      });
   }, []);
 
   const close = () => {

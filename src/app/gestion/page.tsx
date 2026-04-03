@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { categories } from "@/lib/data";
-import type { ProductCategory } from "@/lib/data";
+const categories = ["Bœuf & Veau", "Agneau & Mouton", "Volaille", "Traiteur & Marinés", "Épicerie"] as const;
+type ProductCategory = typeof categories[number];
 import Link from "next/link";
 
 type Tab = "tableau-de-bord" | "produits" | "commandes" | "clients" | "messages" | "comptes";
@@ -311,9 +311,18 @@ export default function GestionPage() {
   const toggleSetting = async (key: string) => {
     const newVal = settings[key as keyof SiteSettings] === "true" ? "false" : "true";
     setSettings(prev => ({ ...prev, [key]: newVal }));
-    await fetch("/api/gestion/settings", {
+    const res = await fetch("/api/gestion/settings", {
       method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ [key]: newVal }),
     });
+    if (!res.ok) {
+      // Annule l'optimisme si echec (session expirée, etc.)
+      setSettings(prev => ({ ...prev, [key]: newVal === "true" ? "false" : "true" }));
+      alert("Session expirée — reconnectez-vous.");
+    } else {
+      // Re-charge depuis la DB pour confirmer
+      const data = await fetch("/api/gestion/settings").then(r => r.json());
+      setSettings(data);
+    }
   };
 
   const addAdmin = async (e: React.FormEvent) => {
