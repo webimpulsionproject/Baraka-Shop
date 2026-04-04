@@ -711,7 +711,7 @@ function MagasinSection() {
           {/* Carte */}
           <div className="rounded-2xl overflow-hidden border border-gray-100 h-[460px]">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2530.5!2d3.1!3d50.6!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2s17+rue+Corneille+Mons-en-Bar%C5%93ul!5e0!3m2!1sfr!2sfr!4v1"
+              src="https://maps.google.com/maps?q=17+rue+Corneille,+59370+Mons-en-Baroeul,+France&output=embed&hl=fr&z=17"
               width="100%"
               height="460"
               style={{ border: 0 }}
